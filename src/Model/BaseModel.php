@@ -6,6 +6,7 @@ use Isswp101\Persimmon\Contracts\Arrayable;
 use Isswp101\Persimmon\Contracts\Jsonable;
 use Isswp101\Persimmon\Contracts\Stringable;
 use Isswp101\Persimmon\DI\Container;
+use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
 use Isswp101\Persimmon\Traits\Containerable;
 use Isswp101\Persimmon\Traits\Eventable;
 use Isswp101\Persimmon\Traits\Timestampable;
@@ -50,6 +51,15 @@ abstract class BaseModel implements ModelInterface, Arrayable, Jsonable, Stringa
         $model = static::di()->getRepository()->find($id, static::class, $columns);
         if ($model != null) {
             $model->exists = true;
+        }
+        return $model;
+    }
+
+    public static function findOrFail($id, array $columns = null): ModelInterface
+    {
+        $model = static::find($id, $columns);
+        if ($model == null) {
+            throw new ModelNotFoundException(get_called_class(), $id);
         }
         return $model;
     }
