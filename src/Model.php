@@ -52,7 +52,7 @@ abstract class Model implements Arrayable, Jsonable, Stringable, JsonSerializabl
     /**
      * {@inheritdoc}
      */
-    public function toArray()
+    public function toArray(): array
     {
         return array_where(get_object_vars($this), function ($value, $key) {
             return !starts_with($key, '_');
@@ -90,7 +90,7 @@ abstract class Model implements Arrayable, Jsonable, Stringable, JsonSerializabl
             return false;
         }
 
-        $this->fillTimestamp();
+        $this->updateTimestamps();
 
         $this->_dal->put($columns);
 

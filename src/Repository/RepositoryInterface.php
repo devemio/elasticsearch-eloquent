@@ -8,9 +8,9 @@ use Isswp101\Persimmon\QueryBuilder\QueryBuilderInterface;
 
 interface RepositoryInterface
 {
-    public function find($id): ModelInterface;
+    public function find($id, string $class, array $columns = null): ModelInterface;
 
-    public function all(QueryBuilderInterface $query): CollectionInterface;
+    public function all(QueryBuilderInterface $query, string $class, array $columns = null): CollectionInterface;
 
     public function insert(ModelInterface $model);
 
