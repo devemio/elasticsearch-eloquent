@@ -4,22 +4,22 @@ namespace Isswp101\Persimmon\Traits;
 
 trait Eventable
 {
-    protected function saving()
+    protected function saving(): bool
     {
         return true;
     }
 
-    protected function saved()
+    protected function saved(): bool
     {
         return true;
     }
 
-    protected function deleting()
+    protected function deleting(): bool
     {
         return true;
     }
 
-    protected function deleted()
+    protected function deleted(): bool
     {
         return true;
     }
