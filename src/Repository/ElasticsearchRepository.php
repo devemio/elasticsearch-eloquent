@@ -5,8 +5,9 @@ namespace Isswp101\Persimmon\Repository;
 use Elasticsearch\Client;
 use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\Contracts\Storable;
-use Isswp101\Persimmon\Model\IEloquent;
+use Isswp101\Persimmon\Model\IElasticsearchModel;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
+use Isswp101\Persimmon\Response\ElasticsearchResponse;
 
 class ElasticsearchRepository implements IRepository
 {
@@ -20,14 +21,49 @@ class ElasticsearchRepository implements IRepository
         $this->client = $client;
     }
 
-    public function find($id, string $class, array $columns = null): IEloquent
+    protected function instantiate(string $class): Storable
     {
-        // TODO: Implement find() method.
+        return new $class;
     }
 
-    public function all(IQueryBuilder $query, string $class, array $columns = null): ICollection
+    public function find($id, string $class, array $columns = null): Storable
     {
-        // TODO: Implement all() method.
+        $model = $this->instantiate($class);
+        $collection = new ElasticsearchCollectionParser($model->getCollection());
+        $params = [
+            'index' => $collection->getIndex(),
+            'type' => $collection->getType(),
+            'id' => $id
+        ];
+        $response = new ElasticsearchResponse($this->client->get($params));
+        $model->fill($response->source());
+        return $model;
+    }
+
+    public function all(IQueryBuilder $query = null, string $class, array $columns = null, callable $callback = null): ICollection
+    {
+        $documents = [];
+        $model = $this->instantiate($class);
+        $collection = new ElasticsearchCollectionParser($model->getCollection());
+        $params = [
+            'index' => $collection->getIndex(),
+            'type' => $collection->getType(),
+            'body' => $query->build()
+        ];
+        $response = new ElasticsearchResponse($this->client->search($params));
+        foreach ($response->getHits() as $hit) {
+            $hit = new ElasticsearchResponse($hit);
+            $model = $this->instantiate($class);
+            $model->fill($hit->source());
+            if ($callback != null) {
+                $callback($model);
+            }
+            if ($model instanceof IElasticsearchModel) {
+                // ...
+            }
+            $documents[] = $model;
+        }
+        return $documents;
     }
 
     public function insert(Storable $model)
@@ -39,7 +75,7 @@ class ElasticsearchRepository implements IRepository
             'id' => $model->getPrimaryKey(),
             'body' => $model->toArray()
         ];
-        $response = $this->client->index($params);
+        $response = new ElasticsearchResponse($this->client->index($params));
         // @TODO Validate response
     }
 

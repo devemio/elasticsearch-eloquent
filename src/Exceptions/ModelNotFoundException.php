@@ -7,7 +7,7 @@ use Isswp101\Persimmon\Helpers\Reflection;
 
 class ModelNotFoundException extends Exception
 {
-    public function __construct($class, $id = null)
+    public function __construct(string $class, $id = null)
     {
         $class = Reflection::getShortname($class);
         if ($id != null) {

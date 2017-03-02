@@ -56,6 +56,14 @@ abstract class BaseModel implements IEloquent, Storable, Presentable
         return static::collection;
     }
 
+    public function exists(bool $value = null): bool
+    {
+        if ($value != null) {
+            $this->exists = $value;
+        }
+        return $this->exists;
+    }
+
     public static function find($id, array $columns = null): IEloquent
     {
         $model = static::di()->getRepository()->find($id, static::class, $columns);
