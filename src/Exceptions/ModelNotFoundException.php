@@ -3,18 +3,17 @@
 namespace Isswp101\Persimmon\Exceptions;
 
 use Exception;
-use ReflectionClass;
+use Isswp101\Persimmon\Helpers\Reflection;
 
 class ModelNotFoundException extends Exception
 {
     public function __construct($class, $id = null)
     {
-        $reflection = new ReflectionClass($class);
-        $model = $reflection->getShortName();
+        $class = Reflection::getShortname($class);
         if ($id != null) {
-            $message = sprintf('Model [%s] not found by id [%s]', $model, $id);
+            $message = sprintf('Model [%s] not found by id [%s]', $class, $id);
         } else {
-            $message = sprintf('Model [%s] not found', $model);
+            $message = sprintf('Model [%s] not found', $class);
         }
         parent::__construct($message);
     }
