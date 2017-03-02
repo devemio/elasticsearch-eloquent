@@ -2,15 +2,13 @@
 
 namespace Isswp101\Persimmon\Model;
 
-use Isswp101\Persimmon\Contracts\Arrayable;
-use Isswp101\Persimmon\Contracts\Jsonable;
-use Isswp101\Persimmon\Contracts\Stringable;
+use Isswp101\Persimmon\Contracts\Presentable;
+use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\DI\Container;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
 use Isswp101\Persimmon\Traits\Containerable;
 use Isswp101\Persimmon\Traits\Eventable;
 use Isswp101\Persimmon\Traits\Timestampable;
-use JsonSerializable;
 
 /**
  * @property mixed id Primary key
@@ -22,7 +20,7 @@ use JsonSerializable;
  * 2. Timestamps +
  * 3. Cache
  */
-abstract class BaseModel implements IEloquent, Arrayable, Jsonable, Stringable, JsonSerializable
+abstract class BaseModel implements IEloquent, Storable, Presentable
 {
     use Containerable, Timestampable, Eventable;
 
@@ -62,6 +60,16 @@ abstract class BaseModel implements IEloquent, Arrayable, Jsonable, Stringable, 
             throw new ModelNotFoundException(get_called_class(), $id);
         }
         return $model;
+    }
+
+    public static function create(array $attributes): IEloquent
+    {
+        return null;
+    }
+
+    public static function destroy($id)
+    {
+        return null;
     }
 
     public function save(array $columns = null)
