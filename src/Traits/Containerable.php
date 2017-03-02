@@ -44,7 +44,7 @@ trait Containerable
 
     public function __toString(): string
     {
-        return $this->toJson();
+        return static::class . $this->toJson();
     }
 
     public function jsonSerialize()
