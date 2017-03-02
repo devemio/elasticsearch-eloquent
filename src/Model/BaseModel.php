@@ -5,6 +5,7 @@ namespace Isswp101\Persimmon\Model;
 use Isswp101\Persimmon\Contracts\Presentable;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\DI\Container;
+use Isswp101\Persimmon\Exceptions\IllegalCollectionException;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
 use Isswp101\Persimmon\Traits\Containerable;
 use Isswp101\Persimmon\Traits\Eventable;
@@ -19,6 +20,7 @@ use Isswp101\Persimmon\Traits\Timestampable;
  * 1. Events +
  * 2. Timestamps +
  * 3. Cache
+ * 4. Update __toString() +
  */
 abstract class BaseModel implements IEloquent, Storable, Presentable
 {
@@ -27,21 +29,31 @@ abstract class BaseModel implements IEloquent, Storable, Presentable
     protected $exists = false;
     protected $timestamps = false;
 
-    abstract protected static function di(): Container;
+    /** @MustBeOverridden */
+    const collection = null;
 
-    public static function getPrimaryKey($id): PrimaryKeyInterface
-    {
-        return new PrimaryKey($id);
-    }
+    const PRIMARY_KEY = 'id';
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+
+    abstract protected static function di(): Container;
 
     public function __construct(array $attributes = [])
     {
         $this->fill($attributes);
     }
 
-    public function getId()
+    public function getPrimaryKey(): string
     {
-        return $this->id;
+        return $this->{static::PRIMARY_KEY};
+    }
+
+    public function getCollection(): string
+    {
+        if (static::collection == null) {
+            throw new IllegalCollectionException();
+        }
+        return static::collection;
     }
 
     public static function find($id, array $columns = null): IEloquent
