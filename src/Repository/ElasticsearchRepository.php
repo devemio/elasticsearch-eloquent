@@ -4,7 +4,7 @@ namespace Isswp101\Persimmon\Repository;
 
 use Elasticsearch\Client;
 
-class ElasticsearchRepository implements RepositoryInterface
+class ElasticsearchRepository implements IRepository
 {
     /**
      * @var Client

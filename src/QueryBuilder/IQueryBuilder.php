@@ -2,7 +2,7 @@
 
 namespace Isswp101\Persimmon\QueryBuilder;
 
-interface QueryBuilderInterface
+interface IQueryBuilder
 {
     public function build(): array;
 }

@@ -22,7 +22,7 @@ use JsonSerializable;
  * 2. Timestamps +
  * 3. Cache
  */
-abstract class BaseModel implements ModelInterface, Arrayable, Jsonable, Stringable, JsonSerializable
+abstract class BaseModel implements IEloquent, Arrayable, Jsonable, Stringable, JsonSerializable
 {
     use Containerable, Timestampable, Eventable;
 
@@ -46,7 +46,7 @@ abstract class BaseModel implements ModelInterface, Arrayable, Jsonable, Stringa
         return $this->id;
     }
 
-    public static function find($id, array $columns = null): ModelInterface
+    public static function find($id, array $columns = null): IEloquent
     {
         $model = static::di()->getRepository()->find($id, static::class, $columns);
         if ($model != null) {
@@ -55,7 +55,7 @@ abstract class BaseModel implements ModelInterface, Arrayable, Jsonable, Stringa
         return $model;
     }
 
-    public static function findOrFail($id, array $columns = null): ModelInterface
+    public static function findOrFail($id, array $columns = null): IEloquent
     {
         $model = static::find($id, $columns);
         if ($model == null) {
