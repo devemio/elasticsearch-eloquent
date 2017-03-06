@@ -11,9 +11,14 @@ class ElasticsearchResponse
         $this->response = $response;
     }
 
-    public function isFound(): bool
+    public function found(): bool
     {
         return $this->response['found'] ?? null;
+    }
+
+    public function created(): bool
+    {
+        return $this->response['created'] ?? null;
     }
 
     public function source(): array
@@ -21,7 +26,7 @@ class ElasticsearchResponse
         return $this->response['_source'] ?? [];
     }
 
-    public function getHits(): array
+    public function hits(): array
     {
         return $this->response['hits']['hits'] ?? [];
     }

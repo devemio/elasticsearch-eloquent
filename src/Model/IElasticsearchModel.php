@@ -2,7 +2,9 @@
 
 namespace Isswp101\Persimmon\Model;
 
-interface IElasticsearchModel
+use Isswp101\Persimmon\Contracts\Storable;
+
+interface IElasticsearchModel extends Storable
 {
 
 }

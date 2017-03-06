@@ -12,9 +12,6 @@ use Isswp101\Persimmon\Traits\Eventable;
 use Isswp101\Persimmon\Traits\Timestampable;
 
 /**
- * @property mixed id Primary key
- * @property string created_at
- * @property string updated_at
  *
  * @TODO
  * 1. Events +
@@ -48,7 +45,7 @@ abstract class BaseModel implements IEloquent, Storable, Presentable
         return $this->{static::PRIMARY_KEY};
     }
 
-    public function getCollection(): string
+    public static function getCollection(): string
     {
         if (static::collection == null) {
             throw new IllegalCollectionException();

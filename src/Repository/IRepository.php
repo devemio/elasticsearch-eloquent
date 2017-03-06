@@ -21,5 +21,5 @@ interface IRepository
 
     public function update(Storable $model);
 
-    public function delete($id);
+    public function delete(Storable $model);
 }

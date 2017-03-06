@@ -9,9 +9,9 @@ trait Timestampable
     protected function updateTimestamps()
     {
         $utc = Carbon::now('UTC')->toDateTimeString();
-        $this->updated_at = $utc;
+        $this->{static::UPDATED_AT} = $utc;
         if (!$this->exists) {
-            $this->created_at = $utc;
+            $this->{static::CREATED_AT} = $utc;
         }
     }
 }
