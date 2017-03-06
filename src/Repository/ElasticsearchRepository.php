@@ -12,6 +12,8 @@ use Isswp101\Persimmon\Response\ElasticsearchResponse;
 
 class ElasticsearchRepository implements IRepository
 {
+    const SOURCE_FALSE = [false];
+
     private $client;
 
     public function __construct(Client $client)
@@ -28,14 +30,15 @@ class ElasticsearchRepository implements IRepository
         return $instance;
     }
 
-    public function find($id, string $class, array $columns = null): Storable
+    public function find($id, string $class, array $columns = []): Storable
     {
         $model = $this->instantiate($class);
         $collection = new ElasticsearchCollectionParser($model->getCollection());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
-            'id' => $id
+            'id' => $id,
+            '_source' => $columns == ElasticsearchRepository::SOURCE_FALSE ? false : $columns
         ];
         $response = new ElasticsearchResponse($this->client->get($params));
         $model->fill($response->source());
@@ -45,7 +48,7 @@ class ElasticsearchRepository implements IRepository
     public function all(
         IQueryBuilder $query = null,
         string $class,
-        array $columns = null,
+        array $columns = [],
         callable $callback = null
     ): ICollection {
         $models = [];
@@ -54,7 +57,8 @@ class ElasticsearchRepository implements IRepository
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
-            'body' => $query->build()
+            'body' => $query->build(),
+            '_source' => $columns == ElasticsearchRepository::SOURCE_FALSE ? false : $columns
         ];
         $response = new ElasticsearchResponse($this->client->search($params));
         foreach ($response->hits() as $hit) {

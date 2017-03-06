@@ -8,12 +8,12 @@ use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 
 interface IRepository
 {
-    public function find($id, string $class, array $columns = null): Storable;
+    public function find($id, string $class, array $columns = []): Storable;
 
     public function all(
         IQueryBuilder $query,
         string $class,
-        array $columns = null,
+        array $columns = [],
         callable $callback = null
     ): ICollection;
 
