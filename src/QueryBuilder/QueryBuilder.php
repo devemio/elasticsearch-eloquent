@@ -5,7 +5,7 @@ namespace Isswp101\Persimmon\QueryBuilder;
 use Isswp101\Persimmon\QueryBuilder\Aggregations\Aggregation;
 use Isswp101\Persimmon\QueryBuilder\Filters\Filter;
 
-class QueryBuilder
+class QueryBuilder implements IQueryBuilder
 {
     /**
      * Query.
@@ -134,9 +134,10 @@ class QueryBuilder
      *
      * @return array
      */
-    public function build()
+    public function build(): array
     {
-        return $this->getQuery();
+//        return $this->getQuery();
+        return ['query' => ['match_all' => new \stdClass()]];
     }
 
     /**

@@ -13,12 +13,17 @@ class ElasticsearchResponse
 
     public function found(): bool
     {
-        return $this->response['found'] ?? null;
+        return $this->response['found'] ?? false;
     }
 
     public function created(): bool
     {
-        return $this->response['created'] ?? null;
+        return $this->response['created'] ?? false;
+    }
+
+    public function id(): string
+    {
+        return $this->response['_id'];
     }
 
     public function source(): array

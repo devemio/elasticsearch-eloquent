@@ -8,5 +8,7 @@ interface Storable extends Arrayable
 
     public function getPrimaryKey(): string;
 
+    public function setPrimaryKey(string $key);
+
     public function fill(array $attributes);
 }

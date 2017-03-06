@@ -3,6 +3,7 @@
 namespace Isswp101\Persimmon\Repository;
 
 use Elasticsearch\Client;
+use Isswp101\Persimmon\Collection\Collection;
 use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
@@ -30,6 +31,12 @@ class ElasticsearchRepository implements IRepository
         return $instance;
     }
 
+    protected function fill(Storable $model, ElasticsearchResponse $response)
+    {
+        $model->fill($response->source());
+        $model->setPrimaryKey($response->id());
+    }
+
     public function find($id, string $class, array $columns = []): Storable
     {
         $model = $this->instantiate($class);
@@ -41,17 +48,16 @@ class ElasticsearchRepository implements IRepository
             '_source' => $columns == ElasticsearchRepository::SOURCE_FALSE ? false : $columns
         ];
         $response = new ElasticsearchResponse($this->client->get($params));
-        $model->fill($response->source());
+        $this->fill($model, $response);
         return $model;
     }
 
     public function all(
-        IQueryBuilder $query = null,
+        IQueryBuilder $query,
         string $class,
         array $columns = [],
         callable $callback = null
     ): ICollection {
-        $models = [];
         $model = $this->instantiate($class);
         $collection = new ElasticsearchCollectionParser($model->getCollection());
         $params = [
@@ -61,14 +67,14 @@ class ElasticsearchRepository implements IRepository
             '_source' => $columns == ElasticsearchRepository::SOURCE_FALSE ? false : $columns
         ];
         $response = new ElasticsearchResponse($this->client->search($params));
+        $models = new Collection();
         foreach ($response->hits() as $hit) {
-            $hit = new ElasticsearchResponse($hit);
             $model = $this->instantiate($class);
-            $model->fill($hit->source());
+            $this->fill($model, new ElasticsearchResponse($hit));
             if ($callback != null) {
                 $callback($model);
             }
-            $models[] = $model;
+            $models->put($model->getPrimaryKey(), $model);
         }
         return $models;
     }

@@ -45,6 +45,11 @@ abstract class BaseModel implements IEloquent, Storable, Presentable
         return $this->{static::PRIMARY_KEY};
     }
 
+    public function setPrimaryKey(string $key)
+    {
+        $this->{static::PRIMARY_KEY} = $key;
+    }
+
     public static function getCollection(): string
     {
         if (static::collection == null) {
