@@ -19,7 +19,7 @@ class TermsAggregation extends Aggregation
         return [
             'terms' => [
                 'field' => $this->field,
-                'size' => $this->size
+                // 'size' => $this->size
             ]
         ];
     }

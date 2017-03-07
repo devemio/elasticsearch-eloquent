@@ -21,10 +21,10 @@ class InnerHitsFilter extends Filter
             'has_parent' => [
                 'type' => $this->parentType,
                 'filter' => [
-                    'match_all' => []
+                    'match_all' => new \stdClass()
                 ],
                 'inner_hits' => [
-                    '_source' => $this->fields
+                    '_source' => ['includes' => $this->fields]
                 ]
             ]
         ];

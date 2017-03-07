@@ -70,7 +70,7 @@ class QueryBuilder
     public function filter($filter = [], $mode = Filter::MODE_INCLUDE)
     {
         if (!$filter) {
-            unset($this->query['body']['filter']);
+            unset($this->query['body']['query']);
             return $this;
         }
 
@@ -159,10 +159,10 @@ class QueryBuilder
     protected function merge(array $query, $mode = 'must')
     {
         if (!array_key_exists('filter', $this->query['body'])) {
-            $this->query['body']['filter']['bool'][$mode] = [];
+            $this->query['body']['query']['bool'][$mode] = [];
         }
 
-        $this->query['body']['filter']['bool'][$mode][] = $query;
+        $this->query['body']['query']['bool'][$mode][] = $query;
 
         return $this;
     }
@@ -263,21 +263,21 @@ class QueryBuilder
 
     public function match($field, $value)
     {
-        $query = ['query' => ['match' => [$field => $value]]];
+        $query = ['match' => [$field => $value]];
         $this->merge($query);
         return $this;
     }
 
     public function notMatch($field, $value)
     {
-        $query = ['query' => ['match' => [$field => $value]]];
+        $query = ['match' => [$field => $value]];
         $this->merge($query, 'must_not');
         return $this;
     }
 
     public function orMatch($field, $value)
     {
-        $query = ['query' => ['match' => [$field => $value]]];
+        $query = ['match' => [$field => $value]];
         $this->merge($query, 'should');
         return $this;
     }
