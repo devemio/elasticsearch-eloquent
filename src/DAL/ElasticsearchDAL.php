@@ -105,7 +105,7 @@ class ElasticsearchDAL implements IDAL
     {
         if (empty($query['body']['query']) && empty($query['body']['filter'])) {
             $query['body']['query'] = [
-                'match_all' => []
+                'match_all' => new \stdClass()
             ];
         }
 
