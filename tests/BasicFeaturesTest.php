@@ -308,6 +308,8 @@ class BasicFeaturesTest extends BaseTestCase
 
     public function testPagination()
     {
+        $this->markTestSkipped('Must be revisited.');
+
         $product = Product::find(1);
         $product->_position = 0;
         $product->makePagination();

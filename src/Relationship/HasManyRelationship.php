@@ -34,7 +34,7 @@ class HasManyRelationship
     {
         $child = $this->childClassName;
         $query = new QueryBuilder();
-        $query->filter(new ParentFilter($this->parent->getId()));
+        $query->filter(new ParentFilter($this->parent->getId(), $child::getType()));
         $collection = $child::search($query);
         $collection->each(function (ElasticsearchModel $model) {
             $model->setParent($this->parent);

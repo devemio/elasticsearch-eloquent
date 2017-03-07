@@ -4,18 +4,21 @@ namespace Isswp101\Persimmon\QueryBuilder\Filters;
 
 class ParentFilter extends Filter
 {
-    public function __construct($ids)
-    {
-        $ids = is_array($ids) ? $ids : [$ids];
+    protected $type;
 
-        parent::__construct($ids);
+    public function __construct($id, $type)
+    {
+        $this->type = $type;
+
+        parent::__construct($id);
     }
 
     public function query($values)
     {
         $query = [
-            'terms' => [
-                '_parent' => $values
+            'parent_id' => [
+                'type' => $this->type,
+                'id' => $values
             ]
         ];
         return $query;

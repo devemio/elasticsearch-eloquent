@@ -158,7 +158,7 @@ class QueryBuilder
 
     protected function merge(array $query, $mode = 'must')
     {
-        if (!array_key_exists('filter', $this->query['body'])) {
+        if (!array_key_exists('query', $this->query['body'])) {
             $this->query['body']['query']['bool'][$mode] = [];
         }
 
