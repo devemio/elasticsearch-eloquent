@@ -47,7 +47,7 @@ class BasicFeaturesTest extends BaseTestCase
 
         $this->sleep(3);
 
-        $query = ['index' => $index, 'type' => $type, 'body' => ['query' => ['match_all' => []]]];
+        $query = ['index' => $index, 'type' => $type, 'body' => ['query' => ['match_all' => new \stdClass()]]];
         $res = $this->es->search($query);
         $this->assertEquals(0, $res['hits']['total']);
     }

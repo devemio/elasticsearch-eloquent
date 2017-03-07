@@ -5,9 +5,9 @@ namespace Isswp101\Persimmon\Test;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 use Elasticsearch\Client;
+use Elasticsearch\ClientBuilder;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Orchestra\Testbench\TestCase;
-use Shift31\LaravelElasticsearch\ElasticsearchServiceProvider;
 
 class BaseTestCase extends TestCase
 {
@@ -24,8 +24,6 @@ class BaseTestCase extends TestCase
         $this->loadDotenv();
 
         parent::setUp();
-
-        $this->es = app(Client::class);
     }
 
     /**
@@ -49,14 +47,19 @@ class BaseTestCase extends TestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        $host = env('ELASTICSEARCH_AUTH_USER', '') . ':' .
-            env('ELASTICSEARCH_AUTH_PASS', '') . '@' .
-            env('ELASTICSEARCH_HOSTS', '');
+        $user = env('ELASTICSEARCH_AUTH_USER', '');
+        $password = env('ELASTICSEARCH_AUTH_PASS', '');
+        $host = env('ELASTICSEARCH_HOSTS', '');
 
-        $app['config']->set('elasticsearch.hosts', [$host]);
+        if ($user && $password) {
+            $host = $user . ':' . $password . '@' . $host;
+        }
 
-        $elasticsearchServiceProvider = new ElasticsearchServiceProvider($app);
-        $elasticsearchServiceProvider->register();
+        $this->es = ClientBuilder::create()->setHosts([$host])->build();
+
+        app()->singleton(Client::class, function () {
+            return $this->es;
+        });
     }
 
     /**
