@@ -2,8 +2,6 @@
 
 namespace Isswp101\Persimmon\Model;
 
-use Isswp101\Persimmon\Contracts\Presentable;
-use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\DI\Container;
 use Isswp101\Persimmon\Exceptions\IllegalCollectionException;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
@@ -86,7 +84,9 @@ abstract class BaseModel implements IEloquent
 
     public static function create(array $attributes): IEloquent
     {
-        return null;
+        $model = new static($attributes);
+        $model->save();
+        return $model;
     }
 
     public static function destroy($id)
