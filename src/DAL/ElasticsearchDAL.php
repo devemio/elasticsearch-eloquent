@@ -4,7 +4,7 @@ namespace Isswp101\Persimmon\DAL;
 
 use Elasticsearch\Client;
 use Illuminate\Support\Arr;
-use Isswp101\Persimmon\Collection\ElasticsearchCollection;
+use Isswp101\Persimmon\Collection\ECollection;
 use Isswp101\Persimmon\ElasticsearchModel;
 use Isswp101\Persimmon\Event\EventEmitter;
 use Isswp101\Persimmon\Model;
@@ -117,7 +117,7 @@ class ElasticsearchDAL implements IDAL
             'body' => $query['body']
         ];
 
-        $collection = new ElasticsearchCollection();
+        $collection = new ECollection();
 
         $this->emitter->trigger(DALEvents::BEFORE_SEARCH, $params);
 

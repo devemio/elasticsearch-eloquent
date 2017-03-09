@@ -3,7 +3,7 @@
 namespace Isswp101\Persimmon\Repository;
 
 use Elasticsearch\Client;
-use Isswp101\Persimmon\Collection\ElasticsearchCollection;
+use Isswp101\Persimmon\Collection\ECollection;
 use Isswp101\Persimmon\Collection\IElasticsearchCollection;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
@@ -67,7 +67,7 @@ class ElasticsearchRepository implements IRepository
             '_source' => $columns == ElasticsearchRepository::SOURCE_FALSE ? false : $columns
         ];
         $response = new ElasticsearchResponse($this->client->search($params));
-        $models = new ElasticsearchCollection();
+        $models = new ECollection();
         foreach ($response->hits() as $hit) {
             $model = $this->instantiate($class);
             $this->fill($model, new ElasticsearchResponse($hit));

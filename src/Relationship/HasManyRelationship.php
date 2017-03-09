@@ -2,7 +2,7 @@
 
 namespace Isswp101\Persimmon\Relationship;
 
-use Isswp101\Persimmon\Collection\ElasticsearchCollection;
+use Isswp101\Persimmon\Collection\ECollection;
 use Isswp101\Persimmon\ElasticsearchModel;
 use Isswp101\Persimmon\QueryBuilder\Filters\ParentFilter;
 use Isswp101\Persimmon\QueryBuilder\QueryBuilder;
@@ -28,7 +28,7 @@ class HasManyRelationship
     /**
      * Find all children.
      *
-     * @return ElasticsearchCollection|ElasticsearchModel[]
+     * @return ECollection|ElasticsearchModel[]
      */
     public function get()
     {

@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Isswp101\Persimmon\QueryBuilder\Aggregations\Bucket;
 
-class ElasticsearchCollection extends Collection
+class ECollection extends Collection
 {
     /**
      * Elasticsearch response.

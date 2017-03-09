@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
-use Isswp101\Persimmon\Collection\ElasticsearchCollection;
+use Isswp101\Persimmon\Collection\ECollection;
 use Isswp101\Persimmon\ElasticsearchModel;
 use Isswp101\Persimmon\Exceptions\InvalidModelEndpointException;
 use Isswp101\Persimmon\Model;
@@ -197,7 +197,7 @@ class BasicFeaturesTest extends BaseTestCase
         $products = Product::search();
         $product = $products->first();
 
-        $this->assertInstanceOf(ElasticsearchCollection::class, $products);
+        $this->assertInstanceOf(ECollection::class, $products);
         $this->assertInstanceOf(Product::class, $product);
         $this->assertEquals(1, $products->count());
         $this->assertEquals(1, $product->getId());

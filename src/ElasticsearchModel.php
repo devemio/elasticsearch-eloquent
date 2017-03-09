@@ -4,7 +4,7 @@ namespace Isswp101\Persimmon;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Isswp101\Persimmon\Collection\ElasticsearchCollection;
+use Isswp101\Persimmon\Collection\ECollection;
 use Isswp101\Persimmon\DAL\ElasticsearchDAL;
 use Isswp101\Persimmon\DAL\IDAL;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
@@ -40,7 +40,7 @@ class ElasticsearchModel extends Model
      * Execute the query and get the result.
      *
      * @param QueryBuilder|array $query
-     * @return ElasticsearchCollection|static[]
+     * @return ECollection|static[]
      */
     public static function search($query = [])
     {
