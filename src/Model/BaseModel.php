@@ -19,7 +19,7 @@ use Isswp101\Persimmon\Traits\Timestampable;
  * 3. Cache
  * 4. Update __toString() +
  */
-abstract class BaseModel implements IEloquent, Storable, Presentable
+abstract class BaseModel implements IEloquent
 {
     use Containerable, Timestampable, Eventable;
 
@@ -27,7 +27,7 @@ abstract class BaseModel implements IEloquent, Storable, Presentable
     protected $timestamps = false;
 
     /** @MustBeOverridden */
-    const collection = null;
+    const COLLECTION = null;
 
     const PRIMARY_KEY = 'id';
     const CREATED_AT = 'created_at';
@@ -52,10 +52,10 @@ abstract class BaseModel implements IEloquent, Storable, Presentable
 
     public static function getCollection(): string
     {
-        if (static::collection == null) {
+        if (static::COLLECTION == null) {
             throw new IllegalCollectionException();
         }
-        return static::collection;
+        return static::COLLECTION;
     }
 
     public function exists(bool $value = null): bool
@@ -66,7 +66,7 @@ abstract class BaseModel implements IEloquent, Storable, Presentable
         return $this->exists;
     }
 
-    public static function find($id, array $columns = null): IEloquent
+    public static function find($id, array $columns = []): IEloquent
     {
         $model = static::di()->getRepository()->find($id, static::class, $columns);
         if ($model != null) {

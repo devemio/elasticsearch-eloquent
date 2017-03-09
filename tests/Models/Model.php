@@ -9,7 +9,7 @@ use Isswp101\Persimmon\Model\IElasticsearchModel;
 
 class Model extends BaseModel implements IElasticsearchModel
 {
-    const collection = 'my_index/my_type';
+    const COLLECTION = 'my_index/my_type';
 
     protected static function di(): Container
     {
