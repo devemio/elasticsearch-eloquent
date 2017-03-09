@@ -12,12 +12,8 @@ use Isswp101\Persimmon\Traits\Eventable;
 use Isswp101\Persimmon\Traits\Timestampable;
 
 /**
- *
  * @TODO
- * 1. Events +
- * 2. Timestamps +
- * 3. Cache
- * 4. Update __toString() +
+ * 1. Cache
  */
 abstract class BaseModel implements IEloquent
 {
