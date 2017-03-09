@@ -2,17 +2,9 @@
 
 namespace Isswp101\Persimmon\Models;
 
-use Isswp101\Persimmon\DI\Container;
-use Isswp101\Persimmon\DI\DI;
-use Isswp101\Persimmon\Model\BaseModel;
-use Isswp101\Persimmon\Model\IElasticsearchModel;
+use Isswp101\Persimmon\Model\ElasticsearchModel;
 
-class Model extends BaseModel implements IElasticsearchModel
+class Model extends ElasticsearchModel
 {
     const COLLECTION = 'my_index/my_type';
-
-    protected static function di(): Container
-    {
-        return DI::make(DI::ELASTICSEARCH);
-    }
 }
