@@ -40,7 +40,7 @@ class ElasticsearchRepository implements IRepository
     public function find($id, string $class, array $columns = []): Storable
     {
         $model = $this->instantiate($class);
-        $collection = new ElasticsearchCollectionParser($model->getCollection());
+        $collection = new ElasticsearchCollectionParser($model->getCollectionName());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
@@ -59,7 +59,7 @@ class ElasticsearchRepository implements IRepository
         callable $callback = null
     ): ICollection {
         $model = $this->instantiate($class);
-        $collection = new ElasticsearchCollectionParser($model->getCollection());
+        $collection = new ElasticsearchCollectionParser($model->getCollectionName());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
@@ -81,7 +81,7 @@ class ElasticsearchRepository implements IRepository
 
     public function insert(Storable $model)
     {
-        $collection = new ElasticsearchCollectionParser($model->getCollection());
+        $collection = new ElasticsearchCollectionParser($model->getCollectionName());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
@@ -93,7 +93,7 @@ class ElasticsearchRepository implements IRepository
 
     public function update(Storable $model)
     {
-        $collection = new ElasticsearchCollectionParser($model->getCollection());
+        $collection = new ElasticsearchCollectionParser($model->getCollectionName());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
@@ -105,7 +105,7 @@ class ElasticsearchRepository implements IRepository
 
     public function delete(Storable $model)
     {
-        $collection = new ElasticsearchCollectionParser($model->getCollection());
+        $collection = new ElasticsearchCollectionParser($model->getCollectionName());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),

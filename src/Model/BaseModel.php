@@ -2,9 +2,11 @@
 
 namespace Isswp101\Persimmon\Model;
 
+use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\DI\Container;
 use Isswp101\Persimmon\Exceptions\IllegalCollectionException;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
+use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 use Isswp101\Persimmon\Traits\Containerable;
 use Isswp101\Persimmon\Traits\Eventable;
 use Isswp101\Persimmon\Traits\Timestampable;
@@ -48,7 +50,7 @@ abstract class BaseModel implements IEloquent
         $this->{static::PRIMARY_KEY} = $key;
     }
 
-    public static function getCollection(): string
+    final public static function getCollectionName(): string
     {
         if (static::COLLECTION == null) {
             throw new IllegalCollectionException();
@@ -64,6 +66,19 @@ abstract class BaseModel implements IEloquent
         return $this->exists;
     }
 
+    public static function all(IQueryBuilder $query, array $columns = [], callable $callback = null): ICollection
+    {
+        $collection = static::di()->getRepository()->all(
+            $query,
+            static::class,
+            $columns,
+            function (IEloquent $model) use ($callback) {
+                $model->exists(true);
+                $callback($model);
+            });
+        return $collection;
+    }
+
     public static function find($id, array $columns = []): IEloquent
     {
         $model = static::di()->getRepository()->find($id, static::class, $columns);
@@ -73,7 +88,7 @@ abstract class BaseModel implements IEloquent
         return $model;
     }
 
-    public static function findOrFail($id, array $columns = null): IEloquent
+    public static function findOrFail($id, array $columns = []): IEloquent
     {
         $model = static::find($id, $columns);
         if ($model == null) {
@@ -94,7 +109,7 @@ abstract class BaseModel implements IEloquent
         static::findOrFail($id)->delete();
     }
 
-    public function save(array $columns = null)
+    public function save(array $columns = [])
     {
         if ($this->saving() === false) {
             return;
@@ -119,7 +134,7 @@ abstract class BaseModel implements IEloquent
         if ($this->deleting() === false) {
             return;
         }
-        $this->di()->getRepository()->delete($this->getId());
+        $this->di()->getRepository()->delete($this->getPrimaryKey());
         $this->exists = false;
         if ($this->deleted() === false) {
             return;
