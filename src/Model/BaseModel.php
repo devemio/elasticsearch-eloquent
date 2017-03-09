@@ -91,7 +91,7 @@ abstract class BaseModel implements IEloquent
 
     public static function destroy($id)
     {
-        return null;
+        static::findOrFail($id)->delete();
     }
 
     public function save(array $columns = null)
