@@ -22,5 +22,7 @@ interface ICollection
 
     public function last();
 
+    public function count(): int;
+
     public function each(callable $callback);
 }

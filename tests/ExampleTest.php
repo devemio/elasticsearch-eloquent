@@ -20,13 +20,19 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     {
 //        $client = ClientBuilder::create()->build();
 //        $repository = new ElasticsearchRepository($client);
-        $model = new Model();
-        $model->id = 'my_id';
-        $model->testField = 'abc';
+//        $model = new Model();
+//        $model->id = 'my_id_1';
+//        $model->testField = 'abc_1';
+//        $model->save();
 
-        $models = Model::all(new QueryBuilder());
+        $matchAll = new \ONGR\ElasticsearchDSL\Query\MatchAllQuery();
+        $search = new \ONGR\ElasticsearchDSL\Search();
+        $search->addQuery($matchAll);
 
-        dd($models->getElasticsearchResponse()->getTotal());
+
+        $models = Model::all(new QueryBuilder($search));
+
+        dd($models->count());
 
 //        $model->save();
 //        $repository->insert($model);

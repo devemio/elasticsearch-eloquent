@@ -12,6 +12,8 @@ use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
  */
 class ElasticsearchModel extends Eloquent implements IElasticsearchModel
 {
+    const NO_SOURCE = [false];
+
     protected static function di(): Container
     {
         return DI::make(DI::ELASTICSEARCH);

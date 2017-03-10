@@ -10,6 +10,7 @@ use Isswp101\Persimmon\CollectionParser\ElasticsearchCollectionParser;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
+use Isswp101\Persimmon\Model\ElasticsearchModel;
 use Isswp101\Persimmon\Model\IElasticsearchModel;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 use Isswp101\Persimmon\Response\ElasticsearchCollectionResponse;
@@ -17,8 +18,6 @@ use Isswp101\Persimmon\Response\ElasticsearchItemResponse;
 
 class ElasticsearchRepository implements IRepository
 {
-    const SOURCE_FALSE = [false];
-
     private $client;
 
     public function __construct(Client $client)
@@ -49,7 +48,7 @@ class ElasticsearchRepository implements IRepository
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
             'id' => $id,
-            '_source' => $columns === ElasticsearchRepository::SOURCE_FALSE ? false : $columns
+            '_source' => $columns === ElasticsearchModel::NO_SOURCE ? false : $columns
         ];
         try {
             $response = new ElasticsearchItemResponse($this->client->get($params));
@@ -72,7 +71,7 @@ class ElasticsearchRepository implements IRepository
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
             'body' => $query->build(),
-            '_source' => $columns === ElasticsearchRepository::SOURCE_FALSE ? false : $columns
+            '_source' => $columns === ElasticsearchModel::NO_SOURCE ? false : $columns
         ];
         $response = new ElasticsearchCollectionResponse($this->client->search($params));
         $models = new ElasticsearchCollection([], $response);

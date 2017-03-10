@@ -4,18 +4,26 @@ namespace Isswp101\Persimmon\QueryBuilder;
 
 use Isswp101\Persimmon\QueryBuilder\Aggregations\Aggregation;
 use Isswp101\Persimmon\QueryBuilder\Filters\Filter;
+use ONGR\ElasticsearchDSL\Search;
 
 class QueryBuilder implements IQueryBuilder
 {
-    protected $query = [
-        'body' => [],
-        'from' => 0,
-        'size' => 0
-    ];
+    protected $query = [];
 
-    public function __construct(array $body = [])
+    /**
+     * @param Search|array|null $query
+     */
+    public function __construct($query = null)
     {
-        $this->query['body'] = $body;
+        if ($query instanceof Search) {
+            $query = $query->toArray();
+        }
+        $this->query = is_array($query) ? $query : $this->getMatchAllQuery();
+    }
+
+    protected function getMatchAllQuery()
+    {
+        return ['query' => ['match_all' => new \stdClass()]];
     }
 
     public function from(int $from): self
@@ -104,7 +112,7 @@ class QueryBuilder implements IQueryBuilder
 
     public function build(): array
     {
-        return ['query' => ['match_all' => new \stdClass()]];
+        return $this->query;
     }
 
     /**
