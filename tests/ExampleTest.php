@@ -26,6 +26,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     {
 //        $branch = Branch::find('london');
         $employee = Employee::find('1:london');
+        dd($employee);
         $branch = $employee->branch()->get();
 
         dd($branch);
