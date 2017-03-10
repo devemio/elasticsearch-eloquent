@@ -2,9 +2,14 @@
 
 namespace Isswp101\Persimmon\Response;
 
+use Isswp101\Persimmon\Aggregations\Bucket;
+use Isswp101\Persimmon\Aggregations\BucketCollection;
+use Isswp101\Persimmon\Collection\Collection;
+
 class ElasticsearchCollectionResponse
 {
     private $response;
+    private $aggregations;
 
     public function __construct(array $response)
     {
@@ -49,5 +54,21 @@ class ElasticsearchCollectionResponse
     public function hits(): array
     {
         return $this->response['hits']['hits'] ?? [];
+    }
+
+    public function getAggregationBuckets(): BucketCollection
+    {
+        if ($this->aggregations != null) {
+            return $this->aggregations;
+        }
+        $this->aggregations = new BucketCollection();
+        foreach ($this->response['aggregations'] ?? [] as $name => $aggregation) {
+            $buckets = new Collection();
+            foreach ($aggregation['buckets'] ?? [] as $bucket) {
+                $buckets->put($bucket['key'], new Bucket($bucket['key'], $bucket['doc_count']));
+            }
+            $this->aggregations->put($name, $buckets);
+        }
+        return $this->aggregations;
     }
 }

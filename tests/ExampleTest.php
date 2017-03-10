@@ -8,9 +8,13 @@ use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Model\IElasticsearchModel;
 use Isswp101\Persimmon\Model\IEloquent;
 use Isswp101\Persimmon\Models\Model;
+use Isswp101\Persimmon\Models\TestFilter;
 use Isswp101\Persimmon\QueryBuilder\QueryBuilder;
 use Isswp101\Persimmon\CollectionParser\ElasticsearchCollectionParser;
 use Isswp101\Persimmon\Repository\ElasticsearchRepository;
+use ONGR\ElasticsearchDSL\Aggregation\Bucketing\TermsAggregation;
+use ONGR\ElasticsearchDSL\Query\FullText\MatchQuery;
+use ONGR\ElasticsearchDSL\Search;
 use SebastianBergmann\CodeCoverage\Report\PHP;
 
 class ExampleTest extends \PHPUnit_Framework_TestCase
@@ -27,11 +31,13 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 //        $model->testField = 'abc_1';
 //        $model->save();
 
-        $matchAll = new \ONGR\ElasticsearchDSL\Query\MatchAllQuery();
-        $search = new \ONGR\ElasticsearchDSL\Search();
-        $search->addQuery($matchAll);
+//        $matchAll = new \ONGR\ElasticsearchDSL\Query\MatchAllQuery();
 
-        $models = Model::all((new QueryBuilder($search))->noColumns());
+        $termsAggregation = new TermsAggregation('testFields', 'testField');
+        $search = new Search();
+        $search->addAggregation($termsAggregation);
+
+        $models = Model::all((new QueryBuilder($search)));
 
         dd($models);
 
