@@ -64,12 +64,11 @@ abstract class Eloquent implements IEloquent
         return $this->exists;
     }
 
-    public static function all(IQueryBuilder $query, array $columns = [], callable $callback = null): ICollection
+    public static function all(IQueryBuilder $query, callable $callback = null): ICollection
     {
         $collection = static::di()->getRepository()->all(
             $query,
             static::class,
-            $columns,
             function (IEloquent $model) use ($callback) {
                 $model->exists(true);
                 if ($callback != null) {

@@ -31,7 +31,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $search = new \ONGR\ElasticsearchDSL\Search();
         $search->addQuery($matchAll);
 
-        $models = Model::all(new QueryBuilder($search));
+        $models = Model::all((new QueryBuilder($search))->noColumns());
 
         dd($models);
 

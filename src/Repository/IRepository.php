@@ -11,12 +11,7 @@ interface IRepository
 
     public function find($id, string $class, array $columns = []): Storable;
 
-    public function all(
-        IQueryBuilder $query,
-        string $class,
-        array $columns = [],
-        callable $callback = null
-    );
+    public function all(IQueryBuilder $query, string $class, callable $callback = null);
 
     public function insert(Storable $model);
 

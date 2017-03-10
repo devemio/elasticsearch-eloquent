@@ -11,7 +11,7 @@ interface IEloquent extends Presentable, Storable
 {
     public function exists(bool $value = null): bool;
 
-    public static function all(IQueryBuilder $query, array $columns = [], callable $callback = null): ICollection;
+    public static function all(IQueryBuilder $query, callable $callback = null): ICollection;
 
     public static function find($id, array $columns = []): IEloquent;
 

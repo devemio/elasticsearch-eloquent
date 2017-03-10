@@ -26,13 +26,13 @@ class QueryBuilder implements IQueryBuilder
         return ['query' => ['match_all' => new \stdClass()]];
     }
 
-    public function from(int $from): self
+    public function from(int $from): QueryBuilder
     {
         $this->query['from'] = $from;
         return $this;
     }
 
-    public function size(int $size): self
+    public function size(int $size): QueryBuilder
     {
         $this->query['size'] = $size;
         return $this;
@@ -255,6 +255,18 @@ class QueryBuilder implements IQueryBuilder
     {
         $query = ['query' => ['match' => [$field => $value]]];
         $this->merge($query, 'should');
+        return $this;
+    }
+
+    public function columns(array $columns): IQueryBuilder
+    {
+        $this->query['_source'] = $columns;
+        return $this;
+    }
+
+    public function noColumns(): IQueryBuilder
+    {
+        $this->query['_source'] = false;
         return $this;
     }
 }

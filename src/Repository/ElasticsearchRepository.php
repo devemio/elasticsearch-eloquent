@@ -7,7 +7,6 @@ use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Isswp101\Persimmon\Collection\ElasticsearchCollection;
 use Isswp101\Persimmon\Collection\IElasticsearchCollection;
 use Isswp101\Persimmon\CollectionParser\ElasticsearchCollectionParser;
-use Isswp101\Persimmon\Constants\Constants;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
@@ -59,19 +58,14 @@ class ElasticsearchRepository implements IRepository
         return $model;
     }
 
-    public function all(
-        IQueryBuilder $query,
-        string $class,
-        array $columns = [],
-        callable $callback = null
-    ): IElasticsearchCollection {
+    public function all(IQueryBuilder $query, string $class, callable $callback = null): IElasticsearchCollection
+    {
         $model = $this->instantiate($class);
         $collection = new ElasticsearchCollectionParser($model->getCollectionName());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
-            'body' => $query->build(),
-            '_source' => $columns === Constants::NO_ELASTICSEARCH_SOURCE ? false : $columns
+            'body' => $query->build()
         ];
         $response = new ElasticsearchCollectionResponse($this->client->search($params));
         $models = new ElasticsearchCollection([], $response);

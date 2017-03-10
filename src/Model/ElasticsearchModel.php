@@ -8,7 +8,7 @@ use Isswp101\Persimmon\DI\DI;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 
 /**
- * @method static IElasticsearchCollection all(IQueryBuilder $query, array $columns = [], callable $callback = null)
+ * @method static IElasticsearchCollection all(IQueryBuilder $query, callable $callback = null)
  */
 class ElasticsearchModel extends Eloquent implements IElasticsearchModel
 {
