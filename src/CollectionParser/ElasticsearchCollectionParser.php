@@ -1,6 +1,6 @@
 <?php
 
-namespace Isswp101\Persimmon\Repository;
+namespace Isswp101\Persimmon\CollectionParser;
 
 use Isswp101\Persimmon\Exceptions\IllegalCollectionException;
 

@@ -14,6 +14,7 @@ use Isswp101\Persimmon\Traits\Timestampable;
 /**
  * @TODO
  * 1. Cache
+ * 2. Consider columns when searching
  */
 abstract class BaseModel implements IEloquent
 {
@@ -70,7 +71,9 @@ abstract class BaseModel implements IEloquent
             $columns,
             function (IEloquent $model) use ($callback) {
                 $model->exists(true);
-                $callback($model);
+                if ($callback != null) {
+                    $callback($model);
+                }
             });
         return $collection;
     }

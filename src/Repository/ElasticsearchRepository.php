@@ -6,12 +6,14 @@ use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Isswp101\Persimmon\Collection\ElasticsearchCollection;
 use Isswp101\Persimmon\Collection\IElasticsearchCollection;
+use Isswp101\Persimmon\CollectionParser\ElasticsearchCollectionParser;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
 use Isswp101\Persimmon\Model\IElasticsearchModel;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
-use Isswp101\Persimmon\Response\ElasticsearchResponse;
+use Isswp101\Persimmon\Response\ElasticsearchCollectionResponse;
+use Isswp101\Persimmon\Response\ElasticsearchItemResponse;
 
 class ElasticsearchRepository implements IRepository
 {
@@ -33,7 +35,7 @@ class ElasticsearchRepository implements IRepository
         return $instance;
     }
 
-    protected function fill(Storable $model, ElasticsearchResponse $response)
+    protected function fill(Storable $model, ElasticsearchItemResponse $response)
     {
         $model->fill($response->source());
         $model->setPrimaryKey($response->id());
@@ -47,10 +49,10 @@ class ElasticsearchRepository implements IRepository
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
             'id' => $id,
-            '_source' => $columns == ElasticsearchRepository::SOURCE_FALSE ? false : $columns
+            '_source' => $columns === ElasticsearchRepository::SOURCE_FALSE ? false : $columns
         ];
         try {
-            $response = new ElasticsearchResponse($this->client->get($params));
+            $response = new ElasticsearchItemResponse($this->client->get($params));
         } catch (Missing404Exception $e) {
             throw new ModelNotFoundException($class, $id);
         }
@@ -70,13 +72,13 @@ class ElasticsearchRepository implements IRepository
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
             'body' => $query->build(),
-            '_source' => $columns == ElasticsearchRepository::SOURCE_FALSE ? false : $columns
+            '_source' => $columns === ElasticsearchRepository::SOURCE_FALSE ? false : $columns
         ];
-        $response = new ElasticsearchResponse($this->client->search($params));
-        $models = new ElasticsearchCollection();
+        $response = new ElasticsearchCollectionResponse($this->client->search($params));
+        $models = new ElasticsearchCollection([], $response);
         foreach ($response->hits() as $hit) {
             $model = $this->instantiate($class);
-            $this->fill($model, new ElasticsearchResponse($hit));
+            $this->fill($model, new ElasticsearchItemResponse($hit));
             if ($callback != null) {
                 $callback($model);
             }

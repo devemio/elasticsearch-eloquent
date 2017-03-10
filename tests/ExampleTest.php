@@ -3,12 +3,13 @@
 namespace Isswp101\Persimmon;
 
 use Elasticsearch\ClientBuilder;
+use Isswp101\Persimmon\Collection\ElasticsearchCollection;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Model\IElasticsearchModel;
 use Isswp101\Persimmon\Model\IEloquent;
 use Isswp101\Persimmon\Models\Model;
 use Isswp101\Persimmon\QueryBuilder\QueryBuilder;
-use Isswp101\Persimmon\Repository\ElasticsearchCollectionParser;
+use Isswp101\Persimmon\CollectionParser\ElasticsearchCollectionParser;
 use Isswp101\Persimmon\Repository\ElasticsearchRepository;
 use SebastianBergmann\CodeCoverage\Report\PHP;
 
@@ -23,7 +24,11 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $model->id = 'my_id';
         $model->testField = 'abc';
 
-        $model = Model::findOrFail(1);
+        /** @var ElasticsearchCollection $models */
+        $models = Model::all(new QueryBuilder());
+
+        dd($models->getTotal());
+
 //        $model->save();
 //        $repository->insert($model);
 
@@ -41,7 +46,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 //        });
 
         echo PHP_EOL . PHP_EOL;
-        echo PHP_EOL . PHP_EOL . $model;
+        echo PHP_EOL . PHP_EOL . $models;
 
         $this->assertTrue(true);
     }

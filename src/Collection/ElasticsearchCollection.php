@@ -2,35 +2,20 @@
 
 namespace Isswp101\Persimmon\Collection;
 
+use Isswp101\Persimmon\Response\ElasticsearchCollectionResponse;
+
 class ElasticsearchCollection extends Collection implements IElasticsearchCollection
 {
-    public function getTook(): int
+    private $response;
+
+    public function __construct(array $items = [], ElasticsearchCollectionResponse $response)
     {
-        // TODO: Implement getTook() method.
+        parent::__construct($items);
+        $this->response = $response;
     }
 
-    public function isTimedOut(): bool
+    public function getElasticsearchResponse(): ElasticsearchCollectionResponse
     {
-        // TODO: Implement isTimedOut() method.
-    }
-
-    public function getTotal(): int
-    {
-        // TODO: Implement getTotal() method.
-    }
-
-    public function getMaxScore(): int
-    {
-        // TODO: Implement getMaxScore() method.
-    }
-
-    public function getShards(): array
-    {
-        // TODO: Implement getShards() method.
-    }
-
-    public function getAggregation(string $name): array
-    {
-        // TODO: Implement getAggregation() method.
+        return $this->response;
     }
 }

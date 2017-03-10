@@ -2,17 +2,9 @@
 
 namespace Isswp101\Persimmon\Collection;
 
+use Isswp101\Persimmon\Response\ElasticsearchCollectionResponse;
+
 interface IElasticsearchCollection extends ICollection
 {
-    public function getTook(): int;
-
-    public function isTimedOut(): bool;
-
-    public function getTotal(): int;
-
-    public function getMaxScore(): int;
-
-    public function getShards(): array;
-
-    public function getAggregation(string $name): array;
+    public function getElasticsearchResponse(): ElasticsearchCollectionResponse;
 }
