@@ -24,10 +24,9 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $model->id = 'my_id';
         $model->testField = 'abc';
 
-        /** @var ElasticsearchCollection $models */
         $models = Model::all(new QueryBuilder());
 
-        dd($models->getTotal());
+        dd($models->getElasticsearchResponse()->getTotal());
 
 //        $model->save();
 //        $repository->insert($model);
