@@ -12,6 +12,7 @@ use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
 use Isswp101\Persimmon\Model\IElasticsearchModel;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
+use Isswp101\Persimmon\Relationship\RelationshipKey;
 use Isswp101\Persimmon\Response\ElasticsearchCollectionResponse;
 use Isswp101\Persimmon\Response\ElasticsearchItemResponse;
 
@@ -41,12 +42,14 @@ class ElasticsearchRepository implements IRepository
 
     public function find($id, string $class, array $columns = []): Storable
     {
+        $ids = new RelationshipKey($id);
         $model = $this->instantiate($class);
         $collection = new ElasticsearchCollectionParser($model->getCollectionName());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
-            'id' => $id,
+            'id' => $ids->getId(),
+            'parent' => $ids->getParentId(),
             '_source' => $columns
         ];
         try {

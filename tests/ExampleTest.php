@@ -7,6 +7,8 @@ use Isswp101\Persimmon\Collection\ElasticsearchCollection;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Model\IElasticsearchModel;
 use Isswp101\Persimmon\Model\IEloquent;
+use Isswp101\Persimmon\Models\Branch;
+use Isswp101\Persimmon\Models\Employee;
 use Isswp101\Persimmon\Models\Model;
 use Isswp101\Persimmon\Models\TestFilter;
 use Isswp101\Persimmon\QueryBuilder\QueryBuilder;
@@ -22,6 +24,14 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     /** @group failing */
     public function testTrueIsTrue()
     {
+//        $branch = Branch::find('london');
+        $employee = Employee::find('1:london');
+        $branch = $employee->branch()->get();
+
+        dd($branch);
+        dd($employee);
+
+
 //        dd(Model::find('my_id', ['testField']));
 
 //        $client = ClientBuilder::create()->build();

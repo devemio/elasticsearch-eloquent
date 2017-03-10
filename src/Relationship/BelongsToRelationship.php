@@ -4,31 +4,27 @@ namespace Isswp101\Persimmon\Relationship;
 
 use Isswp101\Persimmon\ElasticsearchModel;
 use Isswp101\Persimmon\Exceptions\ParentModelNotFoundException;
+use Isswp101\Persimmon\Model\IElasticsearchModel;
 
 class BelongsToRelationship
 {
     /**
-     * @var ElasticsearchModel
+     * @var IElasticsearchModel
      */
     protected $child;
 
     /**
-     * @var ElasticsearchModel
+     * @var IElasticsearchModel
      */
     protected $parentClass;
 
-    public function __construct(ElasticsearchModel $child, $parentClass)
+    public function __construct(IElasticsearchModel $child, $parentClass)
     {
         $this->child = $child;
         $this->parentClass = $parentClass;
     }
 
-    /**
-     * Associate parent document.
-     *
-     * @param ElasticsearchModel $parent
-     */
-    public function associate(ElasticsearchModel $parent)
+    public function associate(IElasticsearchModel $parent)
     {
         $this->child->setParent($parent);
     }
