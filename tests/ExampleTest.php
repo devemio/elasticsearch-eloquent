@@ -18,6 +18,8 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     /** @group failing */
     public function testTrueIsTrue()
     {
+//        dd(Model::find('my_id', ['testField']));
+
 //        $client = ClientBuilder::create()->build();
 //        $repository = new ElasticsearchRepository($client);
 //        $model = new Model();
@@ -29,10 +31,9 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $search = new \ONGR\ElasticsearchDSL\Search();
         $search->addQuery($matchAll);
 
-
         $models = Model::all(new QueryBuilder($search));
 
-        dd($models->count());
+        dd($models);
 
 //        $model->save();
 //        $repository->insert($model);
