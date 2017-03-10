@@ -9,6 +9,7 @@ use ONGR\ElasticsearchDSL\Search;
 class QueryBuilder implements IQueryBuilder
 {
     protected $query = [];
+    protected $chunk = 0;
 
     /**
      * @param Search|array|null $query
@@ -267,6 +268,14 @@ class QueryBuilder implements IQueryBuilder
     public function noColumns(): IQueryBuilder
     {
         $this->query['_source'] = false;
+        return $this;
+    }
+
+    public function chunk(int $count = null): IQueryBuilder
+    {
+        if ($count != null) {
+            $this->chunk = $count;
+        }
         return $this;
     }
 }
