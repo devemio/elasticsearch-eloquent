@@ -17,12 +17,15 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     /** @group failing */
     public function testTrueIsTrue()
     {
-        $client = ClientBuilder::create()->build();
-        $repository = new ElasticsearchRepository($client);
+//        $client = ClientBuilder::create()->build();
+//        $repository = new ElasticsearchRepository($client);
         $model = new Model();
         $model->id = 'my_id';
         $model->testField = 'abc';
-        $repository->insert($model);
+
+        $model = Model::findOrFail(1);
+//        $model->save();
+//        $repository->insert($model);
 
         /** @var Model $model */
 //        $model = $repository->find('my_id', Model::class);
@@ -33,12 +36,12 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 
 //        echo 'PK=' . $model->getCollection();
 
-        $models = $repository->all(new QueryBuilder(), Model::class, [], function(Model $model) {
-            $model->exists(true);
-        });
+//        $models = $repository->all(new QueryBuilder(), Model::class, [], function(Model $model) {
+//            $model->exists(true);
+//        });
 
         echo PHP_EOL . PHP_EOL;
-        echo PHP_EOL . PHP_EOL . $models['my_id'];
+        echo PHP_EOL . PHP_EOL . $model;
 
         $this->assertTrue(true);
     }

@@ -3,10 +3,12 @@
 namespace Isswp101\Persimmon\Repository;
 
 use Elasticsearch\Client;
-use Isswp101\Persimmon\Collection\ECollection;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Isswp101\Persimmon\Collection\ElasticsearchCollection;
 use Isswp101\Persimmon\Collection\IElasticsearchCollection;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
+use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
 use Isswp101\Persimmon\Model\IElasticsearchModel;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 use Isswp101\Persimmon\Response\ElasticsearchResponse;
@@ -47,7 +49,11 @@ class ElasticsearchRepository implements IRepository
             'id' => $id,
             '_source' => $columns == ElasticsearchRepository::SOURCE_FALSE ? false : $columns
         ];
-        $response = new ElasticsearchResponse($this->client->get($params));
+        try {
+            $response = new ElasticsearchResponse($this->client->get($params));
+        } catch (Missing404Exception $e) {
+            throw new ModelNotFoundException($class, $id);
+        }
         $this->fill($model, $response);
         return $model;
     }
@@ -67,7 +73,7 @@ class ElasticsearchRepository implements IRepository
             '_source' => $columns == ElasticsearchRepository::SOURCE_FALSE ? false : $columns
         ];
         $response = new ElasticsearchResponse($this->client->search($params));
-        $models = new ECollection();
+        $models = new ElasticsearchCollection();
         foreach ($response->hits() as $hit) {
             $model = $this->instantiate($class);
             $this->fill($model, new ElasticsearchResponse($hit));
