@@ -7,47 +7,30 @@ use Isswp101\Persimmon\QueryBuilder\Filters\Filter;
 
 class QueryBuilder implements IQueryBuilder
 {
-    /**
-     * Query.
-     *
-     * @var array
-     */
-    protected $query = [];
+    protected $query = [
+        'body' => [],
+        'from' => 0,
+        'size' => 0
+    ];
 
-    /**
-     * Constructor.
-     *
-     * @param array $body
-     */
     public function __construct(array $body = [])
     {
         $this->query['body'] = $body;
     }
 
-    /**
-     * @param int $from
-     * @return $this
-     */
-    public function from($from)
+    public function from(int $from): self
     {
         $this->query['from'] = $from;
         return $this;
     }
 
-    /**
-     * @param int $size
-     * @return $this
-     */
-    public function size($size)
+    public function size(int $size): self
     {
         $this->query['size'] = $size;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasSort()
+    public function hasSort(): bool
     {
         return !empty($this->query['body']['sort']);
     }
@@ -119,24 +102,8 @@ class QueryBuilder implements IQueryBuilder
         return $this->fields(false);
     }
 
-    /**
-     * Return query.
-     *
-     * @return array
-     */
-    protected function getQuery()
-    {
-        return $this->query;
-    }
-
-    /**
-     * Build query.
-     *
-     * @return array
-     */
     public function build(): array
     {
-//        return $this->getQuery();
         return ['query' => ['match_all' => new \stdClass()]];
     }
 
@@ -154,7 +121,7 @@ class QueryBuilder implements IQueryBuilder
      */
     public function toJson($options = 0)
     {
-        return json_encode($this->getQuery(), $options);
+        return json_encode($this->query, $options);
     }
 
     protected function merge(array $query, $mode = 'must')
