@@ -15,8 +15,9 @@ use Isswp101\Persimmon\Traits\Timestampable;
  * @TODO
  * 1. Cache
  * 2. Consider columns when searching
+ * 3. Check __clone()
  */
-abstract class BaseModel implements IEloquent
+abstract class Eloquent implements IEloquent
 {
     use Containerable, Timestampable, Eventable;
 
