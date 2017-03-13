@@ -8,6 +8,10 @@ use Isswp101\Persimmon\Model\IElasticsearchModel;
 class BelongsToRelationship
 {
     protected $child;
+
+    /**
+     * @var IElasticsearchModel
+     */
     protected $parentClass;
 
     public function __construct(IElasticsearchModel $child, string $parentClass)

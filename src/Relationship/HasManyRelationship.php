@@ -3,14 +3,17 @@
 namespace Isswp101\Persimmon\Relationship;
 
 use Isswp101\Persimmon\Collection\IElasticsearchCollection;
-use Isswp101\Persimmon\ElasticsearchModel;
+use Isswp101\Persimmon\CollectionParser\ElasticsearchCollectionParser;
 use Isswp101\Persimmon\Model\IElasticsearchModel;
-use Isswp101\Persimmon\QueryBuilder\Filters\ParentFilter;
 use Isswp101\Persimmon\QueryBuilder\QueryBuilder;
 
 class HasManyRelationship
 {
     protected $parent;
+
+    /**
+     * @var IElasticsearchModel
+     */
     protected $childClass;
 
     public function __construct(IElasticsearchModel $parent, string $childClass)
@@ -21,16 +24,16 @@ class HasManyRelationship
 
     public function get(): IElasticsearchCollection
     {
-        return ($this->childClass)::all(new QueryBuilder());
-
-        $child = $this->childClass;
-        $query = new QueryBuilder();
-        $query->filter(new ParentFilter($this->parent->getId()));
-        $collection = $child::search($query);
-        $collection->each(function (ElasticsearchModel $model) {
-            $model->setParent($this->parent);
-        });
-        return $collection;
+        $collection = new ElasticsearchCollectionParser(($this->childClass)::getCollection());
+        $query = [
+            'query' => [
+                'parent_id' => [
+                    'type' => $collection->getType(),
+                    'id' => $this->parent->getPrimaryKey()
+                ]
+            ]
+        ];
+        return ($this->childClass)::all(new QueryBuilder($query));
     }
 
     public function find($id): IElasticsearchModel
