@@ -8,7 +8,6 @@ use Isswp101\Persimmon\DI\DI;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 use Isswp101\Persimmon\Relationship\BelongsToRelationship;
 use Isswp101\Persimmon\Relationship\HasManyRelationship;
-use Isswp101\Persimmon\Relationship\RelationshipKey;
 
 /**
  * @method static static find($id, array $columns = [])
@@ -16,21 +15,9 @@ use Isswp101\Persimmon\Relationship\RelationshipKey;
  */
 class ElasticsearchModel extends Eloquent implements IElasticsearchModel
 {
-    protected $relationshipKey;
-
     protected static function di(): Container
     {
         return DI::make(DI::ELASTICSEARCH);
-    }
-
-    public function getRelationshipKey(): RelationshipKey
-    {
-        return $this->relationshipKey;
-    }
-
-    public function setRelationshipKey(RelationshipKey $relationshipKey)
-    {
-        $this->relationshipKey = $relationshipKey;
     }
 
     protected function belongsTo(string $class)
