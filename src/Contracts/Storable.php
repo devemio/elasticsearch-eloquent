@@ -4,7 +4,7 @@ namespace Isswp101\Persimmon\Contracts;
 
 interface Storable extends Arrayable
 {
-    public static function getCollectionName(): string;
+    public static function getCollection(): string;
 
     public function getPrimaryKey(): string;
 

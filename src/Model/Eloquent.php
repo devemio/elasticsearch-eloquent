@@ -48,7 +48,7 @@ abstract class Eloquent implements IEloquent
         $this->{static::PRIMARY_KEY} = $key;
     }
 
-    final public static function getCollectionName(): string
+    final public static function getCollection(): string
     {
         if (static::COLLECTION == null) {
             throw new IllegalCollectionException();

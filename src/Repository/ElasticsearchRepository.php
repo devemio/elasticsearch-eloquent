@@ -44,7 +44,7 @@ class ElasticsearchRepository implements IRepository
     {
         $ids = new RelationshipKey($id);
         $model = $this->instantiate($class);
-        $collection = new ElasticsearchCollectionParser($model->getCollectionName());
+        $collection = new ElasticsearchCollectionParser($model->getCollection());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
@@ -64,7 +64,7 @@ class ElasticsearchRepository implements IRepository
     public function all(IQueryBuilder $query, string $class, callable $callback = null): IElasticsearchCollection
     {
         $model = $this->instantiate($class);
-        $collection = new ElasticsearchCollectionParser($model->getCollectionName());
+        $collection = new ElasticsearchCollectionParser($model->getCollection());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
@@ -85,7 +85,7 @@ class ElasticsearchRepository implements IRepository
 
     public function insert(Storable $model)
     {
-        $collection = new ElasticsearchCollectionParser($model->getCollectionName());
+        $collection = new ElasticsearchCollectionParser($model->getCollection());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
@@ -97,7 +97,7 @@ class ElasticsearchRepository implements IRepository
 
     public function update(Storable $model)
     {
-        $collection = new ElasticsearchCollectionParser($model->getCollectionName());
+        $collection = new ElasticsearchCollectionParser($model->getCollection());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
@@ -109,7 +109,7 @@ class ElasticsearchRepository implements IRepository
 
     public function delete(Storable $model)
     {
-        $collection = new ElasticsearchCollectionParser($model->getCollectionName());
+        $collection = new ElasticsearchCollectionParser($model->getCollection());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
