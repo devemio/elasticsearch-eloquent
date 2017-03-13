@@ -114,11 +114,13 @@ class ElasticsearchRepository implements IRepository
 
     public function delete(Storable $model)
     {
+        $relationshipKey = RelationshipKey::parse($model->getPrimaryKey());
         $collection = new ElasticsearchCollectionParser($model->getCollection());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
-            'id' => $model->getPrimaryKey()
+            'id' => $relationshipKey->getId(),
+            'parent' => $relationshipKey->getParentId()
         ];
         $this->client->delete($params);
     }

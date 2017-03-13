@@ -42,6 +42,8 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 //
 //        Bulk::index([$employee]);
 
+        Employee::destroy('1:london');
+        dd(1);
         $employee = Employee::find('1:london');
         dd($employee);
 
