@@ -26,6 +26,11 @@ class ElasticsearchItemResponse
         return $this->response['_id'];
     }
 
+    public function parent()
+    {
+        return $this->response['_parent'];
+    }
+
     public function score(): int
     {
         return $this->response['_score'] ?? 0;

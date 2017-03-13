@@ -34,13 +34,11 @@ class ElasticsearchRepository implements IRepository
         return $instance;
     }
 
-    protected function fill(
-        Storable $model,
-        ElasticsearchItemResponse $response,
-        RelationshipKey $relationshipKey = null
-    ) {
+    protected function fill(Storable $model, ElasticsearchItemResponse $response)
+    {
         $model->fill($response->source());
-        $model->setPrimaryKey($relationshipKey != null ? $relationshipKey->build() : $response->id());
+        $relationshipKey = new RelationshipKey($response->id(), $response->parent());
+        $model->setPrimaryKey($relationshipKey->build());
     }
 
     public function find($id, string $class, array $columns = []): Storable
@@ -60,7 +58,7 @@ class ElasticsearchRepository implements IRepository
         } catch (Missing404Exception $e) {
             throw new ModelNotFoundException($class, $id);
         }
-        $this->fill($model, $response, $relationshipKey);
+        $this->fill($model, $response);
         return $model;
     }
 
@@ -77,8 +75,7 @@ class ElasticsearchRepository implements IRepository
         $models = new ElasticsearchCollection([], $response);
         foreach ($response->hits() as $hit) {
             $model = $this->instantiate($class);
-            $item = new ElasticsearchItemResponse($hit);
-            $this->fill($model, $item/*, new RelationshipKey($item->id())*/);
+            $this->fill($model, new ElasticsearchItemResponse($hit));
             if ($callback != null) {
                 $callback($model);
             }
