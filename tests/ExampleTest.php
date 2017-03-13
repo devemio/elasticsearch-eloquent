@@ -25,12 +25,13 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     public function testTrueIsTrue()
     {
 //        $branch = Branch::find('london');
-//        $employee = Employee::find('1:london');
+        $employee = Employee::find('1:london');
+        $branch = $employee->branch()->get();
 //        dd($employee);
 //        $employee->save();
 //        $branch = $employee->branch()->get();
 //
-//        dd($branch);
+        dd($branch);
 //        dd($employee);
 
         $models = Model::all(new QueryBuilder());

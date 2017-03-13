@@ -2,23 +2,15 @@
 
 namespace Isswp101\Persimmon\Relationship;
 
-use Isswp101\Persimmon\ElasticsearchModel;
 use Isswp101\Persimmon\Exceptions\ParentModelNotFoundException;
 use Isswp101\Persimmon\Model\IElasticsearchModel;
 
 class BelongsToRelationship
 {
-    /**
-     * @var IElasticsearchModel
-     */
     protected $child;
-
-    /**
-     * @var IElasticsearchModel
-     */
     protected $parentClass;
 
-    public function __construct(IElasticsearchModel $child, $parentClass)
+    public function __construct(IElasticsearchModel $child, string $parentClass)
     {
         $this->child = $child;
         $this->parentClass = $parentClass;
@@ -26,56 +18,48 @@ class BelongsToRelationship
 
     public function associate(IElasticsearchModel $parent)
     {
-        $this->child->setParent($parent);
+        $relationshipKey = new RelationshipKey($this->child->getPrimaryKey(), $parent->getPrimaryKey());
+        $this->child->setPrimaryKey($relationshipKey->build());
     }
 
-    /**
-     * Return parent model.
-     *
-     * @return ElasticsearchModel|null
-     */
-    public function get()
+    public function get(): IElasticsearchModel
     {
-        $parent = $this->child->getParent();
+        $relationshipKey = RelationshipKey::parse($this->child->getPrimaryKey());
+        return ($this->parentClass)::find($relationshipKey->getParentId());
 
-        if ($parent) {
-            return $parent;
+//        $parent = $this->child->getParent();
+//
+//        if ($parent) {
+//            return $parent;
+//        }
+//
+//        $parentClass = $this->parentClass;
+//
+//        $parentId = $this->child->getParentId();
+//
+//        $innerHits = $this->child->getInnerHits();
+//
+//        if ($innerHits) {
+//            $attributes = $innerHits->getParent($parentClass::getType());
+//            $parent = new $parentClass($attributes);
+//        } elseif ($parentId) {
+//            $parent = $parentClass::find($parentId);
+//        }
+//
+//        if ($parent) {
+//            $this->child->setParent($parent);
+//        }
+//
+//        return $parent;
+    }
+
+    public function getOrFail(): IElasticsearchModel
+    {
+        $parent = $this->get();
+        if ($parent == null) {
+            $relationshipKey = RelationshipKey::parse($this->child->getPrimaryKey());
+            throw new ParentModelNotFoundException($this->parentClass, $relationshipKey->getParentId());
         }
-
-        $parentClass = $this->parentClass;
-
-        $parentId = $this->child->getParentId();
-
-        $innerHits = $this->child->getInnerHits();
-
-        if ($innerHits) {
-            $attributes = $innerHits->getParent($parentClass::getType());
-            $parent = new $parentClass($attributes);
-        } elseif ($parentId) {
-            $parent = $parentClass::find($parentId);
-        }
-
-        if ($parent) {
-            $this->child->setParent($parent);
-        }
-
         return $parent;
-    }
-
-    /**
-     * Return parent model.
-     *
-     * @throws ParentModelNotFoundException
-     * @return ElasticsearchModel
-     */
-    public function getOrFail()
-    {
-        $model = $this->get();
-
-        if (is_null($model)) {
-            throw new ParentModelNotFoundException($this->parentClass, $this->child->getParentId());
-        }
-
-        return $model;
     }
 }

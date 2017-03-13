@@ -6,7 +6,7 @@ use Exception;
 
 class ParentModelNotFoundException extends Exception
 {
-    public function __construct($class, $id)
+    public function __construct(string $class, string $id)
     {
         $message = sprintf(
             'Model [%s] not found by id [%s].' .
