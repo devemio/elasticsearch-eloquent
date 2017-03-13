@@ -5,6 +5,7 @@ namespace Isswp101\Persimmon;
 use Elasticsearch\ClientBuilder;
 use Isswp101\Persimmon\Collection\ElasticsearchCollection;
 use Isswp101\Persimmon\Contracts\Storable;
+use Isswp101\Persimmon\Helpers\Bulk;
 use Isswp101\Persimmon\Model\IElasticsearchModel;
 use Isswp101\Persimmon\Model\IEloquent;
 use Isswp101\Persimmon\Models\Branch;
@@ -31,7 +32,9 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $employee->dob = '1970-10-25';
         $employee->hobby = 'no';
         $employee->branch()->associate($branch);
-        $employee->save();
+        // $employee->save();
+
+        Bulk::index([$employee]);
 
 //        $employee = Employee::find('1:london');
         dd($employee);
