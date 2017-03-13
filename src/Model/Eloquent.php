@@ -38,14 +38,14 @@ abstract class Eloquent implements IEloquent
         $this->fill($attributes);
     }
 
-    public function getPrimaryKey(): string
-    {
-        return $this->{static::PRIMARY_KEY};
-    }
-
     public function setPrimaryKey(string $key)
     {
         $this->{static::PRIMARY_KEY} = $key;
+    }
+
+    public function getPrimaryKey(): string
+    {
+        return $this->{static::PRIMARY_KEY};
     }
 
     final public static function getCollection(): string
