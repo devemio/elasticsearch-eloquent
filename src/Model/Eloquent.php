@@ -70,9 +70,7 @@ abstract class Eloquent implements IEloquent
 
     public static function all(IQueryBuilder $query, callable $callback = null): ICollection
     {
-        $collection = static::di()->getRepository()->all(
-            $query,
-            static::class,
+        $collection = static::di()->getRepository()->all($query, static::class,
             function (IEloquent $model) use ($callback) {
                 $model->exists(true);
                 if ($callback != null) {
