@@ -21,6 +21,7 @@ abstract class Eloquent implements IEloquent
 {
     use Containerable, Timestampable, Eventable;
 
+    protected $primaryKey;
     protected $exists = false;
     protected $timestamps = false;
 
@@ -40,12 +41,14 @@ abstract class Eloquent implements IEloquent
 
     public function setPrimaryKey(string $key)
     {
-        $this->{static::PRIMARY_KEY} = $key;
+        $this->primaryKey = $key;
+        // $this->{static::PRIMARY_KEY} = $key;
     }
 
     public function getPrimaryKey(): string
     {
-        return $this->{static::PRIMARY_KEY};
+        return $this->primaryKey;
+        // return $this->{static::PRIMARY_KEY};
     }
 
     final public static function getCollection(): string
@@ -133,7 +136,7 @@ abstract class Eloquent implements IEloquent
         if ($this->deleting() === false) {
             return;
         }
-        $this->di()->getRepository()->delete($this->getPrimaryKey());
+        $this->di()->getRepository()->delete($this);
         $this->exists = false;
         if ($this->deleted() === false) {
             return;

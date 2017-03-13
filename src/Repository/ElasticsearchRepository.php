@@ -34,22 +34,23 @@ class ElasticsearchRepository implements IRepository
         return $instance;
     }
 
-    protected function fill(Storable $model, ElasticsearchItemResponse $response)
+    protected function fill(Storable $model, ElasticsearchItemResponse $response, RelationshipKey $relationshipKey)
     {
         $model->fill($response->source());
-        $model->setPrimaryKey($response->id());
+        $model->setPrimaryKey($relationshipKey->build());
+        // $model->setPrimaryKey($response->id());
     }
 
     public function find($id, string $class, array $columns = []): Storable
     {
-        $ids = new RelationshipKey($id);
         $model = $this->instantiate($class);
+        $relationshipKey = RelationshipKey::parse($id);
         $collection = new ElasticsearchCollectionParser($model->getCollection());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
-            'id' => $ids->getId(),
-            'parent' => $ids->getParentId(),
+            'id' => $relationshipKey->getId(),
+            'parent' => $relationshipKey->getParentId(),
             '_source' => $columns
         ];
         try {
@@ -57,7 +58,7 @@ class ElasticsearchRepository implements IRepository
         } catch (Missing404Exception $e) {
             throw new ModelNotFoundException($class, $id);
         }
-        $this->fill($model, $response);
+        $this->fill($model, $response, $relationshipKey);
         return $model;
     }
 
@@ -85,11 +86,13 @@ class ElasticsearchRepository implements IRepository
 
     public function insert(Storable $model)
     {
+        $relationshipKey = RelationshipKey::parse($model->getPrimaryKey());
         $collection = new ElasticsearchCollectionParser($model->getCollection());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
-            'id' => $model->getPrimaryKey(),
+            'id' => $relationshipKey->getId(),
+            'parent' => $relationshipKey->getParentId(),
             'body' => $model->toArray()
         ];
         $this->client->index($params);
@@ -97,11 +100,13 @@ class ElasticsearchRepository implements IRepository
 
     public function update(Storable $model)
     {
+        $relationshipKey = RelationshipKey::parse($model->getPrimaryKey());
         $collection = new ElasticsearchCollectionParser($model->getCollection());
         $params = [
             'index' => $collection->getIndex(),
             'type' => $collection->getType(),
-            'id' => $model->getPrimaryKey(),
+            'id' => $relationshipKey->getId(),
+            'parent' => $relationshipKey->getParentId(),
             'body' => $model->toArray()
         ];
         $this->client->index($params);
