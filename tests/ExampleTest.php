@@ -33,19 +33,18 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 //        dd($branch);
 //        dd($employee);
 
+        $models = Model::all(new QueryBuilder());
+        dd($models);
+
+
 
 //        dd(Model::find('my_id', ['testField']));
 
 //        $client = ClientBuilder::create()->build();
 //        $repository = new ElasticsearchRepository($client);
-//
-        $model = Model::find('my_id_1');
-//        $model->delete();
-        dd($model);
-
         $model = new Model();
-        $model->ModelID = 'my_id_1';
-        $model->TestField = 'abc_1';
+        $model->id = 'my_id_1';
+        $model->testField = 'abc_1';
         $model->save();
         dd($model);
 
