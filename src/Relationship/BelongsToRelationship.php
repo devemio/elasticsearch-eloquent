@@ -30,31 +30,6 @@ class BelongsToRelationship
     {
         $relationshipKey = RelationshipKey::parse($this->child->getPrimaryKey());
         return ($this->parentClass)::find($relationshipKey->getParentId());
-
-//        $parent = $this->child->getParent();
-//
-//        if ($parent) {
-//            return $parent;
-//        }
-//
-//        $parentClass = $this->parentClass;
-//
-//        $parentId = $this->child->getParentId();
-//
-//        $innerHits = $this->child->getInnerHits();
-//
-//        if ($innerHits) {
-//            $attributes = $innerHits->getParent($parentClass::getType());
-//            $parent = new $parentClass($attributes);
-//        } elseif ($parentId) {
-//            $parent = $parentClass::find($parentId);
-//        }
-//
-//        if ($parent) {
-//            $this->child->setParent($parent);
-//        }
-//
-//        return $parent;
     }
 
     public function getOrFail(): IElasticsearchModel
