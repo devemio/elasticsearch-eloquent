@@ -24,8 +24,18 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     /** @group failing */
     public function testTrueIsTrue()
     {
-//        $branch = Branch::find('london');
-        $employee = Employee::find('1:london');
+        $branch = Branch::find('london');
+        $employee = new Employee();
+        $employee->setPrimaryKey(5);
+        $employee->name = 'Vasya1';
+        $employee->dob = '1970-10-25';
+        $employee->hobby = 'no';
+        $employee->branch()->associate($branch);
+        $employee->save();
+
+//        $employee = Employee::find('1:london');
+        dd($employee);
+
         $branch = $employee->branch()->get();
 //        dd($employee);
 //        $employee->save();
