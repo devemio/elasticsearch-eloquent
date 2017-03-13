@@ -38,7 +38,6 @@ class ElasticsearchRepository implements IRepository
     {
         $model->fill($response->source());
         $model->setPrimaryKey($relationshipKey->build());
-        // $model->setPrimaryKey($response->id());
     }
 
     public function find($id, string $class, array $columns = []): Storable

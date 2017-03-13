@@ -25,22 +25,29 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     public function testTrueIsTrue()
     {
 //        $branch = Branch::find('london');
-        $employee = Employee::find('1:london');
-        dd($employee);
-        $branch = $employee->branch()->get();
-
-        dd($branch);
-        dd($employee);
+//        $employee = Employee::find('1:london');
+//        dd($employee);
+//        $employee->save();
+//        $branch = $employee->branch()->get();
+//
+//        dd($branch);
+//        dd($employee);
 
 
 //        dd(Model::find('my_id', ['testField']));
 
 //        $client = ClientBuilder::create()->build();
 //        $repository = new ElasticsearchRepository($client);
-//        $model = new Model();
-//        $model->id = 'my_id_1';
-//        $model->testField = 'abc_1';
-//        $model->save();
+//
+        $model = Model::find('my_id_1');
+//        $model->delete();
+        dd($model);
+
+        $model = new Model();
+        $model->ModelID = 'my_id_1';
+        $model->TestField = 'abc_1';
+        $model->save();
+        dd($model);
 
 //        $matchAll = new \ONGR\ElasticsearchDSL\Query\MatchAllQuery();
 

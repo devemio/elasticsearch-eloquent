@@ -42,13 +42,14 @@ abstract class Eloquent implements IEloquent
     public function setPrimaryKey(string $key)
     {
         $this->primaryKey = $key;
-        // $this->{static::PRIMARY_KEY} = $key;
     }
 
     public function getPrimaryKey(): string
     {
+        if ($this->primaryKey == null) {
+            $this->setPrimaryKey($this->{static::PRIMARY_KEY});
+        }
         return $this->primaryKey;
-        // return $this->{static::PRIMARY_KEY};
     }
 
     final public static function getCollection(): string
