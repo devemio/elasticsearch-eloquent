@@ -2,7 +2,7 @@
 
 namespace Isswp101\Persimmon\Cache;
 
-use Isswp101\Persimmon\Model;
+use Isswp101\Persimmon\Model\IEloquent;
 
 class RuntimeCache
 {
@@ -10,7 +10,7 @@ class RuntimeCache
      * Cache.
      *
      * @var array [
-     *   'instance' => Model,
+     *   'instance' => IEloquent,
      *   'attributes' => []
      * ]
      */
@@ -22,7 +22,7 @@ class RuntimeCache
      * @param mixed $key
      * @return bool
      */
-    public function has($key)
+    public function has($key): bool
     {
         return array_key_exists($key, $this->cache);
     }
@@ -31,7 +31,7 @@ class RuntimeCache
      * Return instance from cache.
      *
      * @param mixed $key
-     * @return Model
+     * @return IEloquent
      */
     public function get($key)
     {
@@ -43,7 +43,7 @@ class RuntimeCache
      *
      * @return array
      */
-    public function keys()
+    public function keys(): array
     {
         return array_keys($this->cache);
     }
@@ -52,22 +52,20 @@ class RuntimeCache
      * Put instance to cache.
      *
      * @param mixed $key
-     * @param Model $instance
+     * @param IEloquent $instance
      * @param array $attributes
-     * @return Model
+     * @return IEloquent
      */
-    public function put($key, Model $instance, array $attributes = ['*'])
+    public function put($key, IEloquent $instance, array $attributes = ['*']): IEloquent
     {
         if ($attributes != ['*'] && $this->has($key)) {
-            $instance = Model::merge($this->cache[$key]['instance'], $instance, $attributes);
+            $instance = RuntimeCache::merge($this->cache[$key]['instance'], $instance, $attributes);
             $attributes = array_merge($this->cache[$key]['attributes'], $attributes);
         }
-
         $this->cache[$key] = [
             'instance' => $instance,
             'attributes' => $attributes
         ];
-
         return $instance;
     }
 
@@ -78,7 +76,7 @@ class RuntimeCache
      * @param array $attributes
      * @return bool
      */
-    public function containsAttributes($key, array $attributes = ['*'])
+    public function containsAttributes($key, array $attributes = ['*']): bool
     {
         return empty($this->getNotCachedAttributes($key, $attributes));
     }
@@ -90,7 +88,7 @@ class RuntimeCache
      * @param array $attributes
      * @return array
      */
-    public function getNotCachedAttributes($key, array $attributes = ['*'])
+    public function getNotCachedAttributes($key, array $attributes = ['*']): array
     {
         if (!$this->has($key)) {
             return $attributes;
@@ -109,5 +107,13 @@ class RuntimeCache
     {
         unset($this->cache[$key]);
         return $this;
+    }
+
+    private static function merge(IEloquent $model1, IEloquent $model2, array $attributes): IEloquent
+    {
+        foreach ($attributes as $attribute) {
+            $model1->{$attribute} = $model2->{$attribute};
+        }
+        return $model1;
     }
 }
