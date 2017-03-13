@@ -50,4 +50,9 @@ class ElasticsearchItemResponse
     {
         return $this->response['_source'] ?? [];
     }
+
+    public function innerHits(): array
+    {
+        return $this->response['inner_hits'] ?? [];
+    }
 }
