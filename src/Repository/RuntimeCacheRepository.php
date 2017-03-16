@@ -8,7 +8,7 @@ use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
 use Isswp101\Persimmon\Model\IEloquent;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 
-class RuntimeCacheRepository implements IRepository
+class RuntimeCacheRepository implements ICacheRepository
 {
     private $collection;
 
@@ -34,10 +34,11 @@ class RuntimeCacheRepository implements IRepository
     public function find($id, string $class, array $columns = []): Storable
     {
         $hash = $this->getHash($class, $id);
-        if (!$this->collection->has($hash)) {
-            $this->collection->put($hash, new EloquentCache());
+        $model = $this->collection->get($hash);
+        if ($model != null && $this->getCachedAttributes()) {
+            return $model;
         }
-        return $this->collection->get($hash);
+        return null;
     }
 
     public function all(IQueryBuilder $query, string $class, callable $callback = null)
@@ -58,5 +59,10 @@ class RuntimeCacheRepository implements IRepository
     public function delete(Storable $model)
     {
         // TODO: Implement delete() method.
+    }
+
+    public function getCachedAttributes(string $id, string $class): array
+    {
+        // TODO: Implement getCachedAttributes() method.
     }
 }
