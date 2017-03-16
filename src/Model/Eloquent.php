@@ -7,7 +7,6 @@ use Isswp101\Persimmon\DI\Container;
 use Isswp101\Persimmon\Exceptions\IllegalCollectionException;
 use Isswp101\Persimmon\Exceptions\IllegalModelHashException;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
-use Isswp101\Persimmon\Helpers\EloquentHash;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 use Isswp101\Persimmon\Traits\Containerable;
 use Isswp101\Persimmon\Traits\Eventable;
@@ -36,6 +35,13 @@ abstract class Eloquent implements IEloquent
     const UPDATED_AT = 'updated_at';
 
     abstract protected static function di(): Container;
+
+    protected static function instantiate(string $primaryKey): IEloquent
+    {
+        $model = new static();
+        $model->setPrimaryKey($primaryKey);
+        return $model;
+    }
 
     public function __construct(array $attributes = [])
     {
@@ -86,12 +92,27 @@ abstract class Eloquent implements IEloquent
     public static function find($id, array $columns = []): IEloquent
     {
         $di = static::di();
-        $cache = $di->getCache()->get(EloquentHash::make(static::class, $id));
-        $cache->getCachedAttributes();
+        $model = Eloquent::instantiate($id);
+        if ($model->shouldUseCache()) {
+            $cache = $di->getCache()->get($model->getHash());
+            $columns = array_diff($columns, $cache->getCachedAttributes());
+            if (!$columns && $cache->get() != null) {
+                return $cache->get();
+            }
+        }
 
-        $model = static::di()->getRepository()->find($id, static::class, $columns);
+        $cache = $di->getCacheRepository()->find($id, static::class, $columns);
+        if ($cache->isReturnable()) {
+
+        }
+
+
+        $model = $di->getRepository()->find($id, static::class, $columns);
         if ($model != null) {
             $model->exists = true;
+            if ($model->shouldUseCache()) {
+                $cache->put($model, $columns);
+            }
         }
         return $model;
     }
@@ -154,6 +175,11 @@ abstract class Eloquent implements IEloquent
         if ($this->getPrimaryKey() == null) {
             throw new IllegalModelHashException($this);
         }
-        return EloquentHash::make(get_class($this), $this->getPrimaryKey());
+        return get_class($this) . '@' . $this->getPrimaryKey();
+    }
+
+    public function shouldUseCache(): bool
+    {
+        return $this->cache;
     }
 }

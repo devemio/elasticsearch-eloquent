@@ -26,4 +26,6 @@ interface IEloquent extends Presentable, Storable
     public function delete();
 
     public function getHash(): string;
+
+    public function shouldUseCache(): bool;
 }
