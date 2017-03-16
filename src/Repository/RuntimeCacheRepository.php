@@ -33,12 +33,11 @@ class RuntimeCacheRepository implements ICacheRepository
 
     public function find($id, string $class, array $columns = []): Storable
     {
-        $hash = $this->getHash($class, $id);
-        $model = $this->collection->get($hash);
-        if ($model != null && $this->getCachedAttributes()) {
-            return $model;
+        $model = $this->collection->get($this->getHash($class, $id));
+        if ($model != null && $columns) {
+            return $model->fill(array_intersect_key($model->toArray(), array_flip($columns)));
         }
-        return null;
+        return $model;
     }
 
     public function all(IQueryBuilder $query, string $class, callable $callback = null)
