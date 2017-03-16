@@ -5,7 +5,9 @@ namespace Isswp101\Persimmon\Model;
 use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\DI\Container;
 use Isswp101\Persimmon\Exceptions\IllegalCollectionException;
+use Isswp101\Persimmon\Exceptions\IllegalModelHashException;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
+use Isswp101\Persimmon\Helpers\EloquentHash;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 use Isswp101\Persimmon\Traits\Containerable;
 use Isswp101\Persimmon\Traits\Eventable;
@@ -24,6 +26,7 @@ abstract class Eloquent implements IEloquent
     protected $primaryKey;
     protected $exists = false;
     protected $timestamps = false;
+    protected $cache = false;
 
     /** @MustBeOverridden */
     const COLLECTION = null;
@@ -82,6 +85,10 @@ abstract class Eloquent implements IEloquent
 
     public static function find($id, array $columns = []): IEloquent
     {
+        $di = static::di();
+        $cache = $di->getCache()->get(EloquentHash::make(static::class, $id));
+        $cache->getCachedAttributes();
+
         $model = static::di()->getRepository()->find($id, static::class, $columns);
         if ($model != null) {
             $model->exists = true;
@@ -140,5 +147,13 @@ abstract class Eloquent implements IEloquent
         if ($this->deleted() === false) {
             return;
         }
+    }
+
+    public function getHash(): string
+    {
+        if ($this->getPrimaryKey() == null) {
+            throw new IllegalModelHashException($this);
+        }
+        return EloquentHash::make(get_class($this), $this->getPrimaryKey());
     }
 }

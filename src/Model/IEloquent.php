@@ -24,4 +24,6 @@ interface IEloquent extends Presentable, Storable
     public function save(array $columns = []);
 
     public function delete();
+
+    public function getHash(): string;
 }
