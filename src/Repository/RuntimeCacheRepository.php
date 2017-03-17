@@ -5,12 +5,14 @@ namespace Isswp101\Persimmon\Repository;
 use Isswp101\Persimmon\Collection\Collection;
 use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\Contracts\Storable;
-use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
-use Isswp101\Persimmon\Model\IEloquent;
+use Isswp101\Persimmon\Exceptions\MethodNotImplementedException;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 
 class RuntimeCacheRepository implements ICacheRepository
 {
+    /**
+     * @var Storable[]
+     */
     private $collection;
 
     public function __construct()
@@ -25,11 +27,7 @@ class RuntimeCacheRepository implements ICacheRepository
 
     public function instantiate(string $class): Storable
     {
-        $instance = new $class;
-        if (!$instance instanceof IEloquent) {
-            throw new ClassTypeErrorException(IEloquent::class);
-        }
-        return $instance;
+        throw new MethodNotImplementedException();
     }
 
     public function find(string $id, string $class, array $columns = []): ?Storable
@@ -46,23 +44,34 @@ class RuntimeCacheRepository implements ICacheRepository
         return $this->collection;
     }
 
-    public function insert(Storable $model)
+    public function insert(Storable $model): void
     {
-        // TODO: Implement insert() method.
+        $hash = $this->getHash(get_class($model), $model->getPrimaryKey());
+        $this->collection->put($hash, $model);
     }
 
-    public function update(Storable $model)
+    public function update(Storable $model): void
     {
-        // TODO: Implement update() method.
+        $hash = $this->getHash(get_class($model), $model->getPrimaryKey());
+        if (!$this->collection->has($hash)) {
+            $this->collection->put($hash, $model);
+        } else {
+            $cachedModel = $this->collection->get($hash);
+            foreach ($model->toArray() as $key => $value) {
+                $cachedModel->{$key} = $value;
+            }
+        }
     }
 
-    public function delete(Storable $model)
+    public function delete(Storable $model): void
     {
-        // TODO: Implement delete() method.
+        $hash = $this->getHash(get_class($model), $model->getPrimaryKey());
+        $this->collection->forget($hash);
     }
 
     public function getCachedAttributes(string $id, string $class): array
     {
-        // TODO: Implement getCachedAttributes() method.
+        $model = $this->find($id, $class);
+        return $model != null ? array_keys($model->toArray()) : [];
     }
 }

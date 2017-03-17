@@ -43,6 +43,7 @@ class ElasticsearchRepository implements IRepository
 
     public function find(string $id, string $class, array $columns = []): ?Storable
     {
+        var_dump('find() called');
         $model = $this->instantiate($class);
         $relationshipKey = RelationshipKey::parse($id);
         $collection = new ElasticsearchCollectionParser($model->getCollection());
@@ -84,7 +85,7 @@ class ElasticsearchRepository implements IRepository
         return $models;
     }
 
-    public function insert(Storable $model)
+    public function insert(Storable $model): void
     {
         $relationshipKey = RelationshipKey::parse($model->getPrimaryKey());
         $collection = new ElasticsearchCollectionParser($model->getCollection());
@@ -98,7 +99,7 @@ class ElasticsearchRepository implements IRepository
         $this->client->index($params);
     }
 
-    public function update(Storable $model)
+    public function update(Storable $model): void
     {
         $relationshipKey = RelationshipKey::parse($model->getPrimaryKey());
         $collection = new ElasticsearchCollectionParser($model->getCollection());
@@ -112,7 +113,7 @@ class ElasticsearchRepository implements IRepository
         $this->client->index($params);
     }
 
-    public function delete(Storable $model)
+    public function delete(Storable $model): void
     {
         $relationshipKey = RelationshipKey::parse($model->getPrimaryKey());
         $collection = new ElasticsearchCollectionParser($model->getCollection());

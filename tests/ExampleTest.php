@@ -32,11 +32,12 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     /** @group failing */
     public function testTrueIsTrue()
     {
-        $model = Model::find('my_id');
+        $model = Model::find('my_id', ['my_id']);
+        $model = Model::find('my_id', ['testField']);
+        $model = Model::find('my_id', ['my_id']);
         dd($model);
 //        $model = new Model();
 //        $model->id = 1;
-        dd($model->getHash());
 
 
 //        $search = [

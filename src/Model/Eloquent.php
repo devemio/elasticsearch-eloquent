@@ -5,7 +5,6 @@ namespace Isswp101\Persimmon\Model;
 use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\DI\Container;
 use Isswp101\Persimmon\Exceptions\IllegalCollectionException;
-use Isswp101\Persimmon\Exceptions\IllegalModelHashException;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 use Isswp101\Persimmon\Traits\Containerable;
@@ -36,7 +35,7 @@ abstract class Eloquent implements IEloquent
 
     abstract protected static function di(): Container;
 
-    protected static function instantiate(string $primaryKey): IEloquent
+    protected static function instantiate(string $primaryKey): Eloquent
     {
         $model = new static();
         $model->setPrimaryKey($primaryKey);
@@ -92,28 +91,19 @@ abstract class Eloquent implements IEloquent
     public static function find(string $id, array $columns = []): ?IEloquent
     {
         $di = static::di();
-//        $model = static::instantiate($id);
-
-//        if ($model->shouldUseCache()) {
-//            $cache = $di->getCache()->get($model->getHash());
-//            $columns = array_diff($columns, $cache->getCachedAttributes());
-//            if (!$columns && $cache->get() != null) {
-//                return $cache->get();
-//            }
-//        }
-//
-//        $cache = $di->getCacheRepository()->find($id, static::class, $columns);
-//        if ($cache->isReturnable()) {
-//
-//        }
-
-
+        $prototype = static::instantiate($id);
+        if ($prototype->cache) {
+            $model = $di->getCacheRepository()->find($id, static::class, $columns);
+            if ($model != null) {
+                return $model;
+            }
+        }
         $model = $di->getRepository()->find($id, static::class, $columns);
-        if ($model != null) {
-            $model->exists = true;
-//            if ($model->shouldUseCache()) {
-//                $cache->put($model, $columns);
-//            }
+        if ($model != null && $model instanceof IEloquent) {
+            $model->exists(true);
+            if ($prototype->cache) {
+                $di->getCacheRepository()->update($model);
+            }
         }
         return $model;
     }
@@ -169,18 +159,5 @@ abstract class Eloquent implements IEloquent
         if ($this->deleted() === false) {
             return;
         }
-    }
-
-    public function getHash(): string
-    {
-        if ($this->getPrimaryKey() == null) {
-            throw new IllegalModelHashException($this);
-        }
-        return get_class($this) . '@' . $this->getPrimaryKey();
-    }
-
-    public function shouldUseCache(): bool
-    {
-        return $this->cache;
     }
 }

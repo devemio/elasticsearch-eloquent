@@ -14,9 +14,9 @@ interface IRepository
 
     public function all(IQueryBuilder $query, string $class, callable $callback = null): ICollection;
 
-    public function insert(Storable $model);
+    public function insert(Storable $model): void;
 
-    public function update(Storable $model);
+    public function update(Storable $model): void;
 
-    public function delete(Storable $model);
+    public function delete(Storable $model): void;
 }
