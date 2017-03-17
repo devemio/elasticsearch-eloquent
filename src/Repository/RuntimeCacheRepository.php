@@ -5,19 +5,19 @@ namespace Isswp101\Persimmon\Repository;
 use Isswp101\Persimmon\Collection\Collection;
 use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\Contracts\Storable;
-use Isswp101\Persimmon\Exceptions\MethodNotImplementedException;
+use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
+use Isswp101\Persimmon\Helpers\Cast;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 
 class RuntimeCacheRepository implements ICacheRepository
 {
-    /**
-     * @var Storable[]
-     */
     private $collection;
+    private $allColumns;
 
     public function __construct()
     {
         $this->collection = new Collection();
+        $this->allColumns = new Collection();
     }
 
     private function getHash(string $class, string $id): string
@@ -27,16 +27,27 @@ class RuntimeCacheRepository implements ICacheRepository
 
     public function instantiate(string $class): Storable
     {
-        throw new MethodNotImplementedException();
+        $instance = new $class;
+        if (!$instance instanceof Storable) {
+            throw new ClassTypeErrorException(Storable::class);
+        }
+        return $instance;
     }
 
     public function find(string $id, string $class, array $columns = []): ?Storable
     {
-        $model = $this->collection->get($this->getHash($class, $id));
-        if ($model != null && $columns) {
-            return $model->fill(array_intersect_key($model->toArray(), array_flip($columns)));
+        if (!$columns && !$this->hasAllColumns($id, $class)) {
+            return null;
         }
-        return $model;
+        $cachedModel = $this->collection->get($this->getHash($class, $id));
+        if ($cachedModel != null && $columns) {
+            $cachedModel = Cast::storable($cachedModel);
+            $model = $this->instantiate($class);
+            $model->setPrimaryKey($cachedModel->getPrimaryKey());
+            $model->fill(array_intersect_key($cachedModel->toArray(), array_flip($columns)));
+            return $model;
+        }
+        return $cachedModel;
     }
 
     public function all(IQueryBuilder $query, string $class, callable $callback = null): ICollection
@@ -69,9 +80,13 @@ class RuntimeCacheRepository implements ICacheRepository
         $this->collection->forget($hash);
     }
 
-    public function getCachedAttributes(string $id, string $class): array
+    public function hasAllColumns(string $id, string $class): bool
     {
-        $model = $this->find($id, $class);
-        return $model != null ? array_keys($model->toArray()) : [];
+        return $this->allColumns->has($this->getHash($class, $id));
+    }
+
+    public function setAllColumns(string $id, string $class): void
+    {
+        $this->allColumns->put($this->getHash($class, $id), true);
     }
 }

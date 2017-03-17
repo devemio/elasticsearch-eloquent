@@ -91,19 +91,31 @@ abstract class Eloquent implements IEloquent
     public static function find(string $id, array $columns = []): ?IEloquent
     {
         $di = static::di();
+        $allColumnsRequested = !$columns;
         $prototype = static::instantiate($id);
         if ($prototype->cache) {
-            $model = $di->getCacheRepository()->find($id, static::class, $columns);
-            if ($model != null) {
-                return $model;
+            $cachedModel = $di->getCacheRepository()->find($id, static::class, $columns);
+            if ($cachedModel != null) {
+                $columns = array_diff($columns, array_keys($cachedModel->toArray()));
+                if (!$columns) {
+                    $cachedModel->exists = true;
+                    return $cachedModel;
+                }
             }
         }
         $model = $di->getRepository()->find($id, static::class, $columns);
-        if ($model != null && $model instanceof IEloquent) {
-            $model->exists(true);
+        if ($model != null) {
             if ($prototype->cache) {
                 $di->getCacheRepository()->update($model);
+                if ($allColumnsRequested) {
+                    $di->getCacheRepository()->setAllColumns($id, static::class);
+                }
+                dd($di->getCacheRepository()->find($id, static::class));
+                dd($id, static::class);
+                dd($di->getCacheRepository());
+                $model = $di->getCacheRepository()->find($id, static::class);
             }
+            $model->exists = true;
         }
         return $model;
     }

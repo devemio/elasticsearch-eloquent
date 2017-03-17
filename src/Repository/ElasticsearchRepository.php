@@ -36,14 +36,14 @@ class ElasticsearchRepository implements IRepository
 
     protected function fill(Storable $model, ElasticsearchItemResponse $response)
     {
-        $model->fill($response->source());
         $relationshipKey = new RelationshipKey($response->id(), $response->parent());
         $model->setPrimaryKey($relationshipKey->build());
+        $model->fill($response->source());
     }
 
     public function find(string $id, string $class, array $columns = []): ?Storable
     {
-        var_dump('find() called');
+        var_dump('--- --- --- Find() called | Columns=' . json_encode($columns));
         $model = $this->instantiate($class);
         $relationshipKey = RelationshipKey::parse($id);
         $collection = new ElasticsearchCollectionParser($model->getCollection());
