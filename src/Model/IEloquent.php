@@ -13,17 +13,17 @@ interface IEloquent extends Presentable, Storable
 
     public static function all(IQueryBuilder $query, callable $callback = null): ICollection;
 
-    public static function find($id, array $columns = []): IEloquent;
+    public static function find(string $id, array $columns = []): ?IEloquent;
 
-    public static function findOrFail($id, array $columns = []): IEloquent;
+    public static function findOrFail(string $id, array $columns = []): IEloquent;
 
     public static function create(array $attributes): IEloquent;
 
-    public static function destroy($id);
+    public static function destroy(string $id): void;
 
-    public function save(array $columns = []);
+    public function save(array $columns = []): void;
 
-    public function delete();
+    public function delete(): void;
 
     public function getHash(): string;
 

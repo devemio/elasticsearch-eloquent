@@ -3,6 +3,7 @@
 namespace Isswp101\Persimmon\Repository;
 
 use Isswp101\Persimmon\Collection\Collection;
+use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
 use Isswp101\Persimmon\Model\IEloquent;
@@ -31,7 +32,7 @@ class RuntimeCacheRepository implements ICacheRepository
         return $instance;
     }
 
-    public function find($id, string $class, array $columns = []): Storable
+    public function find(string $id, string $class, array $columns = []): ?Storable
     {
         $model = $this->collection->get($this->getHash($class, $id));
         if ($model != null && $columns) {
@@ -40,9 +41,9 @@ class RuntimeCacheRepository implements ICacheRepository
         return $model;
     }
 
-    public function all(IQueryBuilder $query, string $class, callable $callback = null)
+    public function all(IQueryBuilder $query, string $class, callable $callback = null): ICollection
     {
-        // TODO: Implement all() method.
+        return $this->collection;
     }
 
     public function insert(Storable $model)

@@ -10,5 +10,5 @@ interface Storable extends Arrayable
 
     public function getPrimaryKey(): string;
 
-    public function fill(array $attributes);
+    public function fill(array $attributes): void;
 }

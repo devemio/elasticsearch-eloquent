@@ -26,10 +26,9 @@ trait Containerable
         unset($this->attributes[$name]);
     }
 
-    public function fill(array $attributes)
+    public function fill(array $attributes): void
     {
         $this->attributes = $attributes;
-        return $this;
     }
 
     public function toArray(): array

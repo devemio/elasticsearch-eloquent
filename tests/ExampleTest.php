@@ -3,9 +3,12 @@
 namespace Isswp101\Persimmon;
 
 use Elasticsearch\ClientBuilder;
+use Isswp101\Persimmon\Cache\ICache;
 use Isswp101\Persimmon\Collection\ElasticsearchCollection;
 use Isswp101\Persimmon\Contracts\Storable;
+use Isswp101\Persimmon\DI\DI;
 use Isswp101\Persimmon\Helpers\Bulk;
+use Isswp101\Persimmon\Model\ElasticsearchModel;
 use Isswp101\Persimmon\Model\IElasticsearchModel;
 use Isswp101\Persimmon\Model\IEloquent;
 use Isswp101\Persimmon\Models\Branch;
@@ -15,7 +18,11 @@ use Isswp101\Persimmon\Models\TestFilter;
 use Isswp101\Persimmon\QueryBuilder\QueryBuilder;
 use Isswp101\Persimmon\CollectionParser\ElasticsearchCollectionParser;
 use Isswp101\Persimmon\Repository\ElasticsearchRepository;
+use Isswp101\Persimmon\Repository\ICacheRepository;
+use Isswp101\Persimmon\Repository\IRepository;
+use Isswp101\Persimmon\Repository\RuntimeCacheRepository;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\TermsAggregation;
+use ONGR\ElasticsearchDSL\InnerHit\ParentInnerHit;
 use ONGR\ElasticsearchDSL\Query\FullText\MatchQuery;
 use ONGR\ElasticsearchDSL\Search;
 use SebastianBergmann\CodeCoverage\Report\PHP;
@@ -25,10 +32,38 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     /** @group failing */
     public function testTrueIsTrue()
     {
+        $model = Model::find('my_id');
+        dd($model);
+//        $model = new Model();
+//        $model->id = 1;
+        dd($model->getHash());
+
+
+//        $search = [
+//            'query' => [
+//                'has_child' => [
+//                    'type' => 'employee',
+//                    'query' => [
+//                        'match' => [
+//                            'name' => 'Vasya1'
+//                        ]
+//                    ],
+//                    'inner_hits' => new \stdClass()
+//                ]
+//            ]
+//        ];
+//
+//        $branches = Branch::all(new QueryBuilder($search));
+
+
 //        $branch = Branch::find('london');
 //        $employees = $branch->employees()->get();
-//
-//        dd($employees);
+
+        /** @var Branch $branch */
+        $branch = $branches->first();
+
+
+        dd($branches);
 //
 //
 //
@@ -42,10 +77,8 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 //
 //        Bulk::index([$employee]);
 
-        Employee::destroy('1:london');
-        dd(1);
-        $employee = Employee::find('1:london');
-        dd($employee);
+//        $employee = Employee::find('1:london');
+//        dd($employee);
 
         $branch = $employee->branch()->get();
 //        dd($employee);

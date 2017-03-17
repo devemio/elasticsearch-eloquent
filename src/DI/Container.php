@@ -2,18 +2,18 @@
 
 namespace Isswp101\Persimmon\DI;
 
-use Isswp101\Persimmon\Cache\ICache;
+use Isswp101\Persimmon\Repository\ICacheRepository;
 use Isswp101\Persimmon\Repository\IRepository;
 
 class Container
 {
     private $repository;
-    private $cache;
+    private $cacheRepository;
 
-    public function __construct(IRepository $repository, ICache $cache)
+    public function __construct(IRepository $repository, ICacheRepository $cacheRepository)
     {
         $this->repository = $repository;
-        $this->cache = $cache;
+        $this->cacheRepository = $cacheRepository;
     }
 
     public function getRepository(): IRepository
@@ -21,8 +21,8 @@ class Container
         return $this->repository;
     }
 
-    public function getCache(): ICache
+    public function getCacheRepository(): ICacheRepository
     {
-        return $this->cache;
+        return $this->cacheRepository;
     }
 }

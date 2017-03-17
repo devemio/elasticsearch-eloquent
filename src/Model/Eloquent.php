@@ -89,35 +89,36 @@ abstract class Eloquent implements IEloquent
         return $collection;
     }
 
-    public static function find($id, array $columns = []): IEloquent
+    public static function find(string $id, array $columns = []): ?IEloquent
     {
         $di = static::di();
-        $model = Eloquent::instantiate($id);
-        if ($model->shouldUseCache()) {
-            $cache = $di->getCache()->get($model->getHash());
-            $columns = array_diff($columns, $cache->getCachedAttributes());
-            if (!$columns && $cache->get() != null) {
-                return $cache->get();
-            }
-        }
+//        $model = static::instantiate($id);
 
-        $cache = $di->getCacheRepository()->find($id, static::class, $columns);
-        if ($cache->isReturnable()) {
-
-        }
+//        if ($model->shouldUseCache()) {
+//            $cache = $di->getCache()->get($model->getHash());
+//            $columns = array_diff($columns, $cache->getCachedAttributes());
+//            if (!$columns && $cache->get() != null) {
+//                return $cache->get();
+//            }
+//        }
+//
+//        $cache = $di->getCacheRepository()->find($id, static::class, $columns);
+//        if ($cache->isReturnable()) {
+//
+//        }
 
 
         $model = $di->getRepository()->find($id, static::class, $columns);
         if ($model != null) {
             $model->exists = true;
-            if ($model->shouldUseCache()) {
-                $cache->put($model, $columns);
-            }
+//            if ($model->shouldUseCache()) {
+//                $cache->put($model, $columns);
+//            }
         }
         return $model;
     }
 
-    public static function findOrFail($id, array $columns = []): IEloquent
+    public static function findOrFail(string $id, array $columns = []): IEloquent
     {
         $model = static::find($id, $columns);
         if ($model == null) {
@@ -133,12 +134,12 @@ abstract class Eloquent implements IEloquent
         return $model;
     }
 
-    public static function destroy($id)
+    public static function destroy(string $id): void
     {
         static::findOrFail($id)->delete();
     }
 
-    public function save(array $columns = [])
+    public function save(array $columns = []): void
     {
         if ($this->saving() === false) {
             return;
@@ -158,7 +159,7 @@ abstract class Eloquent implements IEloquent
         }
     }
 
-    public function delete()
+    public function delete(): void
     {
         if ($this->deleting() === false) {
             return;

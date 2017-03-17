@@ -5,7 +5,7 @@ namespace Isswp101\Persimmon\Repository;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Isswp101\Persimmon\Collection\ElasticsearchCollection;
-use Isswp101\Persimmon\Collection\IElasticsearchCollection;
+use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\CollectionParser\ElasticsearchCollectionParser;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
@@ -41,7 +41,7 @@ class ElasticsearchRepository implements IRepository
         $model->setPrimaryKey($relationshipKey->build());
     }
 
-    public function find($id, string $class, array $columns = []): Storable
+    public function find(string $id, string $class, array $columns = []): ?Storable
     {
         $model = $this->instantiate($class);
         $relationshipKey = RelationshipKey::parse($id);
@@ -62,7 +62,7 @@ class ElasticsearchRepository implements IRepository
         return $model;
     }
 
-    public function all(IQueryBuilder $query, string $class, callable $callback = null): IElasticsearchCollection
+    public function all(IQueryBuilder $query, string $class, callable $callback = null): ICollection
     {
         $model = $this->instantiate($class);
         $collection = new ElasticsearchCollectionParser($model->getCollection());
