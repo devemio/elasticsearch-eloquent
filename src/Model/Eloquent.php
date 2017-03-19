@@ -35,13 +35,6 @@ abstract class Eloquent implements IEloquent
 
     abstract protected static function di(): Container;
 
-    protected static function instantiate(string $primaryKey): Eloquent
-    {
-        $model = new static();
-        $model->setPrimaryKey($primaryKey);
-        return $model;
-    }
-
     public function __construct(array $attributes = [])
     {
         $this->fill($attributes);
@@ -91,30 +84,14 @@ abstract class Eloquent implements IEloquent
     public static function find(string $id, array $columns = []): ?IEloquent
     {
         $di = static::di();
-        $allColumnsRequested = !$columns;
-        $prototype = static::instantiate($id);
-        if ($prototype->cache) {
-            $cachedModel = $di->getCacheRepository()->find($id, static::class, $columns);
-            if ($cachedModel != null) {
-                $columns = array_diff($columns, array_keys($cachedModel->toArray()));
-                if (!$columns) {
-                    $cachedModel->exists = true;
-                    return $cachedModel;
-                }
-            }
+        $model = new static();
+        if ($model->cache) {
+            $cacheDecorator = new CacheDecorator($di->getRepository(), $di->getCacheRepository();
+            $model = $cacheDecorator->find($id, static::class, $columns);
+        } else {
+            $model = $di->getRepository()->find($id, static::class, $columns);
         }
-        $model = $di->getRepository()->find($id, static::class, $columns);
         if ($model != null) {
-            if ($prototype->cache) {
-                $di->getCacheRepository()->update($model);
-                if ($allColumnsRequested) {
-                    $di->getCacheRepository()->setAllColumns($id, static::class);
-                }
-                dd($di->getCacheRepository()->find($id, static::class));
-                dd($id, static::class);
-                dd($di->getCacheRepository());
-                $model = $di->getCacheRepository()->find($id, static::class);
-            }
             $model->exists = true;
         }
         return $model;
