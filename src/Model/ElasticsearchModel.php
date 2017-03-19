@@ -17,7 +17,15 @@ class ElasticsearchModel extends Eloquent implements IElasticsearchModel
 {
     protected static function di(): Container
     {
-        return DI::make(DI::ELASTICSEARCH);
+        $container = DI::make('elasticsearch');
+        if ($container == null) {
+            DI::bind('elasticsearch', function () {
+                $client = ClientBuilder::create()->build();
+                return new Container(new ElasticsearchRepository($client), new RuntimeCacheRepository());
+            }, DI::SINGLETON);
+            $container = DI::make('elasticsearch');
+        }
+        return $container;
     }
 
     protected function belongsTo(string $class): BelongsToRelationship
