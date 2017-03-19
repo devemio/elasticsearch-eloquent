@@ -11,13 +11,13 @@ use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 
 class RuntimeCacheRepository implements ICacheRepository
 {
-    private $collection;
-    private $allColumns;
+    private $data = [];
+    private $allColumns = [];
 
     public function __construct()
     {
-        $this->collection = new Collection();
-        $this->allColumns = new Collection();
+        // $this->collection = new Collection();
+        // $this->allColumns = new Collection();
     }
 
     private function getHash(string $class, string $id): string
@@ -36,48 +36,55 @@ class RuntimeCacheRepository implements ICacheRepository
 
     public function find(string $id, string $class, array $columns = []): ?Storable
     {
-        if (!$columns && !$this->hasAllColumns($id, $class)) {
-            return null;
-        }
-        $cachedModel = $this->collection->get($this->getHash($class, $id));
-        if ($cachedModel != null && $columns) {
-            $cachedModel = Cast::storable($cachedModel);
+        $hash = $this->getHash($class, $id);
+        $data = $this->data[$hash] ?? [];
+        if ($data) {
             $model = $this->instantiate($class);
-            $model->setPrimaryKey($cachedModel->getPrimaryKey());
-            $model->fill(array_intersect_key($cachedModel->toArray(), array_flip($columns)));
+            $model->setPrimaryKey($id);
+            if ($columns) {
+                $data = array_intersect_key($data, array_flip($columns));
+            }
+            $model->fill($data);
             return $model;
         }
-        return $cachedModel;
+        return null;
+
+        // if (!$columns && !$this->hasAllColumns($id, $class)) {
+        //     return null;
+        // }
+        // $cachedModel = $this->collection->get($this->getHash($class, $id));
+        // if ($cachedModel != null && $columns) {
+        //     $cachedModel = Cast::storable($cachedModel);
+        //     $model = $this->instantiate($class);
+        //     $model->setPrimaryKey($cachedModel->getPrimaryKey());
+        //     $model->fill(array_intersect_key($cachedModel->toArray(), array_flip($columns)));
+        //     return $model;
+        // }
+        // return $cachedModel;
     }
 
     public function all(IQueryBuilder $query, string $class, callable $callback = null): ICollection
     {
-        return $this->collection;
+        return new Collection($this->data); // @TODO return data that's related to $class
+        // @TODO return collection of models, not array
     }
 
     public function insert(Storable $model): void
     {
         $hash = $this->getHash(get_class($model), $model->getPrimaryKey());
-        $this->collection->put($hash, $model);
+        $this->data[$hash] = $model->toArray();
     }
 
     public function update(Storable $model): void
     {
         $hash = $this->getHash(get_class($model), $model->getPrimaryKey());
-        if (!$this->collection->has($hash)) {
-            $this->collection->put($hash, $model);
-        } else {
-            $cachedModel = $this->collection->get($hash);
-            foreach ($model->toArray() as $key => $value) {
-                $cachedModel->{$key} = $value;
-            }
-        }
+        $this->data[$hash] = array_merge($this->data[$hash] ?? [], $model->toArray());
     }
 
     public function delete(Storable $model): void
     {
         $hash = $this->getHash(get_class($model), $model->getPrimaryKey());
-        $this->collection->forget($hash);
+        unset($this->data[$hash]);
     }
 
     public function hasAllColumns(string $id, string $class): bool
