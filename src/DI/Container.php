@@ -21,7 +21,7 @@ class Container
         return $this->repository;
     }
 
-    public function getCacheRepository(): ICacheRepository
+    public function getCacheRepository(): IRepository
     {
         return $this->cacheRepository;
     }
