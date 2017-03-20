@@ -12,12 +12,6 @@ use Isswp101\Persimmon\Traits\Containerable;
 use Isswp101\Persimmon\Traits\Eventable;
 use Isswp101\Persimmon\Traits\Timestampable;
 
-/**
- * @TODO
- * 1. Cache
- * 2. Consider columns when searching
- * 3. Check __clone()
- */
 abstract class Eloquent implements IEloquent
 {
     use Containerable, Timestampable, Eventable;
@@ -119,7 +113,7 @@ abstract class Eloquent implements IEloquent
         static::findOrFail($id)->delete();
     }
 
-    public function save(array $columns = []): void
+    public function save(): void
     {
         if ($this->saving() === false) {
             return;

@@ -21,7 +21,7 @@ interface IEloquent extends Presentable, Storable
 
     public static function destroy(string $id): void;
 
-    public function save(array $columns = []): void;
+    public function save(): void;
 
     public function delete(): void;
 }
