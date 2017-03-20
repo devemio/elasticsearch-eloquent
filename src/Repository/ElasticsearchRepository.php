@@ -43,7 +43,6 @@ class ElasticsearchRepository implements IRepository
 
     public function find(string $id, string $class, array $columns = []): ?Storable
     {
-        var_dump('--- --- --- Find() called | Columns=' . json_encode($columns));
         $model = $this->instantiate($class);
         $relationshipKey = RelationshipKey::parse($id);
         $collection = new ElasticsearchCollectionParser($model->getCollection());

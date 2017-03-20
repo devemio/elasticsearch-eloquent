@@ -9,7 +9,7 @@ class CacheDecorator
 {
     private $repository;
     private $cacheRepository;
-    private $allColumns = [];
+    private static $allColumnsHashes = []; // Static is not a good idea
 
     public function __construct(IRepository $repository, IRepository $cacheRepository)
     {
@@ -24,7 +24,7 @@ class CacheDecorator
 
     public function find(string $id, string $class, array $columns = []): ?Storable
     {
-        $hash = $this->getHash($class, $id);
+        $hash = $this->getHash($id, $class);
         $model = $this->cacheRepository->find($id, $class, $columns);
         if ($model) {
             if ($columns) {
@@ -32,7 +32,7 @@ class CacheDecorator
                     return $model;
                 }
             } else {
-                if ($this->allColumns[$hash] ?? false) {
+                if (CacheDecorator::$allColumnsHashes[$hash] ?? false) {
                     return $model;
                 }
             }
@@ -40,7 +40,7 @@ class CacheDecorator
         $model = $this->repository->find($id, $class, $columns);
         $this->cacheRepository->update($model);
         if (!$columns) {
-            $this->allColumns[$hash] = true;
+            CacheDecorator::$allColumnsHashes[$hash] = true;
         }
         return $model;
     }

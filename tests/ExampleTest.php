@@ -41,6 +41,9 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $model = Model::find('my_id', ['testField']);
         $model = Model::find('my_id', ['id']);
         $model = Model::find('my_id');
+        $model = Model::find('my_id');
+        $model = Model::find('my_id');
+        $model = Model::find('my_id', ['testField']);
         dd($model);
 
 
