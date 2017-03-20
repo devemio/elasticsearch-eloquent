@@ -6,6 +6,7 @@ use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
 use Isswp101\Persimmon\Exceptions\MethodNotImplementedException;
+use Isswp101\Persimmon\Helpers\Arr;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 
 class RuntimeCacheRepository implements IRepository
@@ -41,7 +42,7 @@ class RuntimeCacheRepository implements IRepository
         $model = $this->instantiate($class);
         $model->setPrimaryKey($id);
         if ($columns) {
-            $data = array_intersect_key($data, array_flip($columns));
+            $data = Arr::only($data, $columns);
         }
         $model->fill($data);
         return $model;

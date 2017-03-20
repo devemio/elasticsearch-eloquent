@@ -4,8 +4,8 @@ namespace Isswp101\Persimmon\Helpers;
 
 class Arr
 {
-    public static function get(array $array, $key, $default = null)
+    public static function only(array $array, array $keys)
     {
-        return $array[$key] ?? $default;
+        return array_intersect_key($array, array_flip($keys));
     }
 }
