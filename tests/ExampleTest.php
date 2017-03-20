@@ -139,13 +139,12 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actualModel);
     }
 
-    /** @group fail */
     public function testSearchOperations()
     {
         Model::create(['id' => 1, 'testField' => 'abc']);
         Model::create(['id' => 2, 'testField' => 'bcd']);
         Model::create(['id' => 3, 'testField' => 'cde']);
-        sleep(5);
+        sleep(5); // @TODO: fix it
         $models = Model::all(new QueryBuilder());
         $query = [
             'query' => [
