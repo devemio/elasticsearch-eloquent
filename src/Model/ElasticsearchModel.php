@@ -2,12 +2,15 @@
 
 namespace Isswp101\Persimmon\Model;
 
+use Elasticsearch\ClientBuilder;
 use Isswp101\Persimmon\Collection\IElasticsearchCollection;
 use Isswp101\Persimmon\DI\Container;
 use Isswp101\Persimmon\DI\DI;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 use Isswp101\Persimmon\Relationship\BelongsToRelationship;
 use Isswp101\Persimmon\Relationship\HasManyRelationship;
+use Isswp101\Persimmon\Repository\ElasticsearchRepository;
+use Isswp101\Persimmon\Repository\RuntimeCacheRepository;
 
 /**
  * @method static static|null find(string $id, array $columns = [])

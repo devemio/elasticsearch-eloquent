@@ -2,7 +2,6 @@
 
 namespace Isswp101\Persimmon\DI;
 
-use Isswp101\Persimmon\Repository\ICacheRepository;
 use Isswp101\Persimmon\Repository\IRepository;
 
 class Container
@@ -10,7 +9,7 @@ class Container
     private $repository;
     private $cacheRepository;
 
-    public function __construct(IRepository $repository, ICacheRepository $cacheRepository)
+    public function __construct(IRepository $repository, IRepository $cacheRepository)
     {
         $this->repository = $repository;
         $this->cacheRepository = $cacheRepository;

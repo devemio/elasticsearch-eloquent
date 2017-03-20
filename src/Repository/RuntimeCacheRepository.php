@@ -2,11 +2,10 @@
 
 namespace Isswp101\Persimmon\Repository;
 
-use Isswp101\Persimmon\Collection\Collection;
 use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
-use Isswp101\Persimmon\Helpers\Cast;
+use Isswp101\Persimmon\Exceptions\MethodNotImplementedException;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 
 class RuntimeCacheRepository implements IRepository
@@ -50,7 +49,7 @@ class RuntimeCacheRepository implements IRepository
 
     public function all(IQueryBuilder $query, string $class, callable $callback = null): ICollection
     {
-        throw new MethodNotImplemented(__METHOD__);
+        throw new MethodNotImplementedException(__METHOD__);
     }
 
     public function insert(Storable $model): void

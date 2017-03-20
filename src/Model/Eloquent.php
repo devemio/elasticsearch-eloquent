@@ -2,6 +2,7 @@
 
 namespace Isswp101\Persimmon\Model;
 
+use Isswp101\Persimmon\Cache\CacheDecorator;
 use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\DI\Container;
 use Isswp101\Persimmon\Exceptions\IllegalCollectionException;
@@ -86,7 +87,7 @@ abstract class Eloquent implements IEloquent
         $di = static::di();
         $model = new static();
         if ($model->cache) {
-            $cacheDecorator = new CacheDecorator($di->getRepository(), $di->getCacheRepository();
+            $cacheDecorator = new CacheDecorator($di->getRepository(), $di->getCacheRepository());
             $model = $cacheDecorator->find($id, static::class, $columns);
         } else {
             $model = $di->getRepository()->find($id, static::class, $columns);

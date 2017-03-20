@@ -1,16 +1,20 @@
 <?php
 
+namespace Isswp101\Persimmon\Cache;
+
+use Isswp101\Persimmon\Contracts\Storable;
+use Isswp101\Persimmon\Repository\IRepository;
+
 class CacheDecorator
 {
     private $repository;
     private $cacheRepository;
-    private $allColumns;
+    private $allColumns = [];
 
     public function __construct(IRepository $repository, IRepository $cacheRepository)
     {
         $this->repository = $repository;
         $this->cacheRepository = $cacheRepository;
-        $this->allColumns = new Collection();
     }
 
     private function getHash(string $id, string $class): string
@@ -24,13 +28,11 @@ class CacheDecorator
         $model = $this->cacheRepository->find($id, $class, $columns);
         if ($model) {
             if ($columns) {
-                // If you wanna specified columns...
                 if (!array_diff($columns, array_keys($model->toArray()))) {
                     return $model;
                 }
             } else {
-                // If you wanna all columns...
-                if ($this->allColumns->get($hash, false)) {
+                if ($this->allColumns[$hash] ?? false) {
                     return $model;
                 }
             }
@@ -38,7 +40,7 @@ class CacheDecorator
         $model = $this->repository->find($id, $class, $columns);
         $this->cacheRepository->update($model);
         if (!$columns) {
-            $this->allColumns->put($hash, true);
+            $this->allColumns[$hash] = true;
         }
         return $model;
     }
