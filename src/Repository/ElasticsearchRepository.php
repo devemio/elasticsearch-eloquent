@@ -9,8 +9,6 @@ use Isswp101\Persimmon\Collection\ICollection;
 use Isswp101\Persimmon\CollectionParser\ElasticsearchCollectionParser;
 use Isswp101\Persimmon\Contracts\Storable;
 use Isswp101\Persimmon\Exceptions\ClassTypeErrorException;
-use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
-use Isswp101\Persimmon\Model\IElasticsearchModel;
 use Isswp101\Persimmon\QueryBuilder\IQueryBuilder;
 use Isswp101\Persimmon\Relationship\RelationshipKey;
 use Isswp101\Persimmon\Response\ElasticsearchCollectionResponse;
@@ -28,8 +26,8 @@ class ElasticsearchRepository implements IRepository
     public function instantiate(string $class): Storable
     {
         $instance = new $class;
-        if (!$instance instanceof IElasticsearchModel) {
-            throw new ClassTypeErrorException(IElasticsearchModel::class);
+        if (!$instance instanceof Storable) {
+            throw new ClassTypeErrorException(Storable::class);
         }
         return $instance;
     }
@@ -56,7 +54,7 @@ class ElasticsearchRepository implements IRepository
         try {
             $response = new ElasticsearchItemResponse($this->client->get($params));
         } catch (Missing404Exception $e) {
-            throw new ModelNotFoundException($class, $id);
+            return null;
         }
         $this->fill($model, $response);
         return $model;
