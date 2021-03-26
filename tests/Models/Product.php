@@ -1,12 +1,11 @@
 <?php
 
-namespace Isswp101\Persimmon\Test\Models;
+namespace Isswp101\Persimmon\Tests\Models;
 
-class Product extends ElasticsearchModel
+use Isswp101\Persimmon\Models\BaseElasticsearchModel;
+
+class Product extends BaseElasticsearchModel
 {
-    public static $_index = 'test';
-    public static $_type = 'test';
-
-    public $name;
-    public $price = 0;
+    protected string $index = 'index';
+    protected string $type = 'type';
 }
