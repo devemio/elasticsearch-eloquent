@@ -15,9 +15,17 @@ class BaseTest extends TestCase
 {
     public function testTrue(): void
     {
-        $product = Product::find(1);
+        Product::destroy('CEf6cHgBFA4Vtvihlk4a');
 
-        dd($product->toArray());
+//        dd($product->toArray());
+
+//        $product = new Product([
+//            'price' => 10
+//        ]);
+//
+//        $product->save();
+//
+//        dd($product->toArray());
 
         $this->assertTrue(true);
     }

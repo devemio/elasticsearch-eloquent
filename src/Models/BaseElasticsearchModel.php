@@ -74,7 +74,7 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
     {
         $path = new Path($this->index, $this->type, new Id($this->id));
 
-        $this->id = $this->persistence->save($path, $this->toArray());
+        $this->id = $this->persistence->save($path, $this->toArray())->value();
 
         $this->existing = true;
     }
@@ -103,7 +103,13 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
         $attributes = $model->persistence->find($path);
 
+        if (!$attributes) {
+            return null;
+        }
+
         $model->fill($attributes);
+
+        $model->id = $id;
 
         $model->existing = true;
 
