@@ -2,6 +2,7 @@
 
 namespace Isswp101\Persimmon\Tests;
 
+use Isswp101\Persimmon\QueryBuilder\QueryBuilder;
 use Isswp101\Persimmon\Tests\Models\Product;
 use PHPUnit\Framework\TestCase;
 
@@ -17,16 +18,12 @@ class BaseTest extends TestCase
     {
         Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
 
-        $product = Product::firstOrFail([
-            'query' => [
-//                'match_all' => new \stdClass()
-            'match' => [
-                'price' => 30
-            ]
-            ]
-        ]);
+        $query = new QueryBuilder();
+        $query->match('price', 30);
 
-        dd($product->toArray());
+        $products = Product::search($query->build());
+
+        dd(count($products));
 
 //        $product = new Product([
 //            'price' => 10
