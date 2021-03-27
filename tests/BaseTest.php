@@ -62,8 +62,10 @@ class BaseTest extends TestCase
     {
         $product = Product::create(array_merge(['id' => 1], $this->attributes));
 
+        $this->assertFalse($product->exists());
+
         Product::destroy(1);
 
-        $product->exists();
+        $this->assertTrue($product->exists());
     }
 }
