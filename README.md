@@ -236,7 +236,7 @@ The MIT License (MIT).
 [ico-downloads]: https://img.shields.io/packagist/dt/isswp101/elasticsearch-eloquent.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/isswp101/elasticsearch-eloquent
-[link-travis]: https://travis-ci.org/isswp101/elasticsearch-eloquent
+[link-travis]: https://travis-ci.org/devemio/elasticsearch-eloquent
 [link-scrutinizer]: https://scrutinizer-ci.com/g/isswp101/elasticsearch-eloquent/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/isswp101/elasticsearch-eloquent
 [link-downloads]: https://packagist.org/packages/isswp101/elasticsearch-eloquent
