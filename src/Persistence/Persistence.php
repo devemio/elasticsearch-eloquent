@@ -8,7 +8,6 @@ use Isswp101\Persimmon\Contracts\PersistenceContract;
 use Isswp101\Persimmon\DTO\Id;
 use Isswp101\Persimmon\DTO\Path;
 use Isswp101\Persimmon\DTO\SearchResponse;
-use Isswp101\Persimmon\Queries\MatchAllQuery;
 
 final class Persistence implements PersistenceContract
 {
