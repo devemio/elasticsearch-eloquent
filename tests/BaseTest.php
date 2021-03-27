@@ -4,11 +4,12 @@ namespace Isswp101\Persimmon\Tests;
 
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
-use Isswp101\Persimmon\Queries\MatchAllQuery;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
 use Isswp101\Persimmon\Tests\Models\Product;
 use PHPUnit\Framework\TestCase;
 
-function dd($value): void
+function dd(mixed $value): void
 {
     print_r($value);
     echo PHP_EOL;
@@ -60,12 +61,80 @@ class BaseTest extends TestCase
 
     public function testDeleteModel(): void
     {
+        $this->expectException(Missing404Exception::class);
+
         $product = Product::create(array_merge(['id' => 1], $this->attributes));
+
+        $this->assertTrue($product->exists());
+
+        $product->delete();
 
         $this->assertFalse($product->exists());
 
         Product::destroy(1);
+    }
 
-        $this->assertTrue($product->exists());
+    public function testFindModel(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $product = Product::create($this->attributes);
+
+        $found = Product::find($product->getId());
+        $this->assertNotNull($found);
+        $this->assertInstanceOf(Product::class, $product);
+        $this->assertEquals($found->toArray(), $product->toArray());
+
+        $found = Product::find($product->getId(), ['name']);
+        $this->assertEquals($found->name, $product->name);
+        $this->assertNotEquals($found->toArray(), $product->toArray());
+
+        Product::findOrFail(1000);
+    }
+
+    public function testFirstModel(): void
+    {
+        Product::create($this->attributes);
+
+        $query = [
+            'query' => [
+                'match' => [
+                    'name' => $this->attributes['name']
+                ]
+            ]
+        ];
+
+        $products = Product::search($query);
+        $this->assertGreaterThanOrEqual(1, count($products));
+
+        $product = Product::first($query);
+        $this->assertNotNull($product);
+        $this->assertInstanceOf(Product::class, $product);
+    }
+
+    public function testFirstOrFailModel(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $query = [
+            'query' => [
+                'match' => [
+                    'name' => $this->attributes['price']
+                ]
+            ]
+        ];
+
+        Product::firstOrFail($query);
+    }
+
+    public function testAllModels(): void
+    {
+        for ($i = 0; $i < 20; $i++) {
+            Product::create($this->attributes);
+        }
+
+        $products = Product::all();
+
+        $this->assertGreaterThanOrEqual(20, count($products));
     }
 }

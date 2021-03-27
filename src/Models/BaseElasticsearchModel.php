@@ -77,6 +77,8 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
         $this->persistence->delete($path);
 
+        $this->exists = false;
+
         $this->deleted();
     }
 
