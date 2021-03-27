@@ -1,6 +1,6 @@
 <?php
 
-namespace Isswp101\Persimmon\Traits;
+namespace Isswp101\Persimmon\Concerns;
 
 use Isswp101\Persimmon\DTO\SearchResponse;
 

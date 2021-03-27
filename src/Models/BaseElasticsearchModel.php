@@ -5,6 +5,7 @@ namespace Isswp101\Persimmon\Models;
 use Elasticsearch\ClientBuilder;
 use Isswp101\Persimmon\Concerns\Attributable;
 use Isswp101\Persimmon\Concerns\Elasticsearchable;
+use Isswp101\Persimmon\Concerns\Eventable;
 use Isswp101\Persimmon\Concerns\Existable;
 use Isswp101\Persimmon\Concerns\Timestampable;
 use Isswp101\Persimmon\Contracts\Arrayable;
@@ -15,7 +16,6 @@ use Isswp101\Persimmon\DTO\Id;
 use Isswp101\Persimmon\DTO\Path;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
 use Isswp101\Persimmon\Persistence\Persistence;
-use Isswp101\Persimmon\Traits\Eventable;
 use Stringable;
 
 /**
