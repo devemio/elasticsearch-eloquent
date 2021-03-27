@@ -30,6 +30,11 @@ class BaseTest extends TestCase
         $this->client = ClientBuilder::create()->build();
     }
 
+    private function sleep(int $seconds = 1): void
+    {
+        sleep($seconds);
+    }
+
     public function testFillModel(): void
     {
         $a = new Product($this->attributes);
@@ -44,6 +49,8 @@ class BaseTest extends TestCase
     public function testCreateModel(): void
     {
         $product = Product::create($this->attributes);
+
+        $this->sleep();
 
         $this->assertNotNull($product->getId());
 
@@ -65,6 +72,8 @@ class BaseTest extends TestCase
 
         $product = Product::create(array_merge(['id' => '1'], $this->attributes));
 
+        $this->sleep();
+
         $this->assertTrue($product->exists());
 
         $product->delete();
@@ -79,6 +88,8 @@ class BaseTest extends TestCase
         $this->expectException(ModelNotFoundException::class);
 
         $product = Product::create($this->attributes);
+
+        $this->sleep();
 
         $found = Product::find($product->getId());
         $this->assertNotNull($found);
@@ -95,6 +106,8 @@ class BaseTest extends TestCase
     public function testFirstModel(): void
     {
         Product::create($this->attributes);
+
+        $this->sleep();
 
         $query = [
             'query' => [
@@ -131,6 +144,8 @@ class BaseTest extends TestCase
     {
         for ($i = 0; $i < 10; $i++) {
             Product::create($this->attributes);
+
+            $this->sleep();
         }
 
         $products = Product::all();
@@ -149,9 +164,13 @@ class BaseTest extends TestCase
         $this->assertNotNull($product->updated_at);
         $this->assertEquals($this->attributes['name'], $product->name);
 
-        sleep(1);
-        $product->name = 'updated';
+        sleep(1); // created_at must not equal updated_at
+
+        $product->name = 'Updated';
+
         $product->save(['name']);
+
+        $this->sleep();
 
         $params = [
             'index' => $product->getIndex(),
@@ -160,7 +179,7 @@ class BaseTest extends TestCase
         ];
 
         $res = $this->client->get($params)['_source'];
-        $this->assertEquals('updated', $res['name']);
+        $this->assertEquals('Updated', $res['name']);
         $this->assertNotEquals($res['created_at'], $res['updated_at']);
     }
 }
