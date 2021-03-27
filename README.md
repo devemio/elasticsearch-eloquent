@@ -24,56 +24,28 @@ $ composer require isswp101/elasticsearch-eloquent
 
 ## Usage
 
-### Configure dependencies
-
-> **Warning!** First of all you should create a base model and inherit from it their models.
-
-```php
-use Elasticsearch\Client;
-use Isswp101\Persimmon\DAL\ElasticsearchDAL;
-use Isswp101\Persimmon\ElasticsearchModel as Model;
-use Isswp101\Persimmon\Event\EventEmitter;
-
-class ElasticsearchModel extends Model
-{
-    public function __construct(array $attributes = [])
-    {
-        $dal = new ElasticsearchDAL($this, app(Client::class), app(EventEmitter::class));
-
-        parent::__construct($dal, $attributes);
-    }
-
-    public static function createInstance()
-    {
-        return new static();
-    }
-}
-```
-
-In this example we use Laravel IoC Container to resolve `Elasticsearch\Client` dependency as `app(Client::class)`.
-
 ### Create a new model
 
-You must override static variables `index` and `type` to determine the document path.
+You should override `index` and `type` properties to determine the document path.
 
 ```php
-class Product extends ElasticsearchModel
-{
-    protected static $_index = 'test';
-    protected static $_type = 'test';
+use Isswp101\Persimmon\Models\BaseElasticsearchModel;
 
-    public $name;
-    public $price = 0;
+class Product extends BaseElasticsearchModel
+{
+    protected string $index = 'index';
+    protected string|null $type = 'type'; // optional
 }
 ```
 
-Here `name` and `price` are fields which will be stored in Elasticsearch.  
-> **Warning!** Don't use field names starting with underscore `$_*`, for example `$_name`.
-
-Use the static `create()` method to create document in Elasticsearch:
+Use the static `create()` method to create the document in Elasticsearch:
 
 ```php
-$product = Product::create(['id' => 3, 'name' => 'Product 3', 'price' => 30]);
+$product = Product::create([
+    'id' => 1, 
+    'name' => 'Product',
+    'price' => 10
+]);
 ```
 
 ### Save the model
@@ -81,8 +53,8 @@ $product = Product::create(['id' => 3, 'name' => 'Product 3', 'price' => 30]);
 ```php
 $product = new Product();
 $product->id = 1;
-$product->name = 'Product 1';
-$product->price = 20;
+$product->name = 'Product';
+$product->price = 10;
 $product->save();
 ```
 
@@ -90,23 +62,22 @@ Use `save()` method to store model data in Elasticsearch. Let's see how this loo
 
 ```json
 {
-   "_index": "test",
-   "_type": "test",
+   "_index": "index",
+   "_type": "type",
    "_id": "1",
    "_version": 1,
    "found": true,
    "_source": {
-      "name": "Product 1",
+      "name": "Product",
       "price": 10,
       "id": 1,
-      "user_id": null,
-      "created_at": "2016-06-03 08:11:08",
-      "updated_at": "2016-06-03 08:11:08"
+      "created_at": "2021-03-27T11:24:15+00:00",
+      "updated_at": "2021-03-27T11:24:15+00:00"
    }
 }
 ```
 
-Fields `created_at` and `updated_at` were created automatically. The `user_id` field is persistent field to store user id.
+Fields `created_at` and `updated_at` were created automatically.
 
 ### Find existing model
 
@@ -120,38 +91,35 @@ If you have big data in Elasticsearch you can specify certain fields to retrieve
 $product = Product::find(1, ['name']);
 ```
 
-In this case the `price` field equals `0` because it's populated as the default value that you specified in the model.
-
 There are the following methods:
 * `findOrFail()` returns `ModelNotFoundException` exception if no result found.
-* `findOrNew()` returns a new model if no result found.
 
-### Model cache
+### Cache
 
 There is a smart model cache when you use methods like `find()`, `findOrFail()` and so on.
 
 ```php
-$product = Product::find(1, ['name']);  // will be retrieved from the elasticsearch
-$product = Product::find(1, ['name']);  // will be retrieved from the cache
-$product = Product::find(1, ['price']); // elasticsearch
-$product = Product::find(1, ['price']); // cache
-$product = Product::find(1, ['name']);  // cache
+$product = Product::find(1, ['name']);  // from elasticsearch
+$product = Product::find(1, ['name']);  // from cache
+$product = Product::find(1, ['price']); // from elasticsearch
+$product = Product::find(1, ['price']); // from cache
+$product = Product::find(1, ['name']);  // from cache
 ```
 
 ```php
-$product = Product::findOrFail(1);      // elasticsearch
-$product = Product::find(1);            // cache
-$product = Product::find(1, ['name']);  // cache
-$product = Product::find(1, ['price']); // cache
+$product = Product::find(1);            // from elasticsearch
+$product = Product::find(1);            // from cache
+$product = Product::find(1, ['name']);  // from cache
+$product = Product::find(1, ['price']); // from cache
 ```
 
 ### Partial update
 
-You can use partial update to update specific fields quickly.
+You can use the partial update to update specific fields quickly.
 
 ```php
 $product = Product::find(1, ['name']);
-$product->name = 'Product 3';
+$product->name = 'Name';
 $product->save('name');
 ```
 
@@ -183,27 +151,20 @@ You can override the following methods to define events:
 For example:
 
 ```php
-class Product extends ElasticsearchModel
+use Isswp101\Persimmon\Models\BaseElasticsearchModel;
+
+class Product extends BaseElasticsearchModel
 {
-    public static $_index = 'test';
-    public static $_type = 'test';
-
-    public $name;
-    public $price = 0;
-
-    protected function saving()
+    protected function saving(): bool
     {
-        if ($this->price <= 0) {
-            return false;
-        }
-
-        return true;
+        // Disable update if it's free
+        return $this->price <= 0;
     }
 
-    protected function deleting()
+    protected function deleting(): bool
     {
-        if (!$this->canDelete()) {
-            throw new LogicException('No permissions to delete the model');
+        if ($this->user_id != 1) {
+            throw new DomainException('No permissions to delete this model');
         }
 
         return true;
@@ -227,21 +188,13 @@ The `firstOrFail($query)` method returns `ModelNotFoundException` exception if `
 $product = Product::firstOrFail($query);
 ```
 
-The `search($query)` method returns documents (default 50 items) according to the query.
+The `search($query)` method returns documents according to the query.
 
 ```php
 $products = Product::search($query);
 ```
 
-The `map($query, callable $callback)` method returns all documents (default 50 items per request) according to the query.
-
-```php
-$total = Product::map([], function (Product $product) {
-    // ...
-});
-```
-
-The `all($query)` method returns all documents according to the query.
+The `all($query)` method returns all documents (default 50 items per request) according to the query.
 
 ```php
 $products = Product::all($query);
@@ -251,74 +204,9 @@ If `$query` is not passed the query will be as `match_all` query.
 
 ### Query Builder
 
-```php
-use Isswp101\Persimmon\QueryBuilder\QueryBuilder;
+Consider using these packages:
 
-$query = new QueryBuilder();
-```
-
-Simple usage:
-
-```php
-$query = new QueryBuilder(['query' => ['match' => ['name' => 'Product']]]);
-$products = Product::search($query);
-```
-
-The `match` query:
-
-```php
-$query = new QueryBuilder();
-$query->match('name', 'Product');
-$products = Product::search($query);    
-```
-
-The `range` query:
-
-```php
-$query = new QueryBuilder();
-$query->betweenOrEquals('price', 20, 30)->greaterThan('price', 15);
-$products = Product::search($query);
-```
-
-### Filters
-
-Feel free to add your own filters.
-
-The `TermFilter` filter:
-
-```php
-$query = new QueryBuilder();
-$query->filter(new TermFilter('name', '2'));
-$products = Product::search($query);
-```
-
-The `IdsFilter` filter:
-
-```php
-$query = new QueryBuilder();
-$query->filter(new IdsFilter([1, 3]));
-$products = Product::search($query);
-```
-
-The `RangeOrExistFilter` filter:
-
-```php
-$query = new QueryBuilder();
-$query->filter(new RangeOrExistFilter('price', ['gte' => 20]));
-$products = Product::search($query);
-```
-
-### Aggregations
-
-Feel free to add your own aggregations.
-
-```php
-$query = new QueryBuilder();
-$query->aggregation(new TermsAggregation('name'));
-$products = Product::search($query);
-$buckets = $products->getAggregation('name');
-// Usage: $buckets[0]->getKey() and $buckets[0]->getCount()
-```
+- [ElasticsearchDSL](https://github.com/ongr-io/ElasticsearchDSL)
 
 ### Parent-Child Relationship
 
