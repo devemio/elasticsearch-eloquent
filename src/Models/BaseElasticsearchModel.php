@@ -148,7 +148,7 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
         $model->delete();
     }
 
-    public static function search(array $query): array
+    public static function search(array $query = []): array
     {
         $model = new static();
 

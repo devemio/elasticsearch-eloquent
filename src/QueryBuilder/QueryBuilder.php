@@ -5,42 +5,26 @@ namespace Isswp101\Persimmon\QueryBuilder;
 use Isswp101\Persimmon\QueryBuilder\Aggregations\Aggregation;
 use Isswp101\Persimmon\QueryBuilder\Filters\Filter;
 
-class QueryBuilder
+final class QueryBuilder
 {
-    /**
-     * Query.
-     *
-     * @var array
-     */
-    protected $query = [];
+    private array $query = [];
 
-    /**
-     * Constructor.
-     *
-     * @param array $body
-     */
     public function __construct(array $body = [])
     {
         $this->query['body'] = $body;
     }
 
-    /**
-     * @param int $from
-     * @return $this
-     */
-    public function from($from)
+    public function from(int $from): QueryBuilder
     {
         $this->query['from'] = $from;
+
         return $this;
     }
 
-    /**
-     * @param int $size
-     * @return $this
-     */
-    public function size($size)
+    public function size(int $size): QueryBuilder
     {
         $this->query['size'] = $size;
+
         return $this;
     }
 
@@ -119,24 +103,9 @@ class QueryBuilder
         return $this->fields(false);
     }
 
-    /**
-     * Return query.
-     *
-     * @return array
-     */
-    protected function getQuery()
+    public function build(): array
     {
-        return $this->query;
-    }
-
-    /**
-     * Build query.
-     *
-     * @return array
-     */
-    public function build()
-    {
-        return $this->getQuery();
+        return $this->query['body'];
     }
 
     /**
@@ -153,10 +122,10 @@ class QueryBuilder
      */
     public function toJson($options = 0)
     {
-        return json_encode($this->getQuery(), $options);
+        return json_encode($this->build(), $options);
     }
 
-    protected function merge(array $query, $mode = 'must')
+    private function merge(array $query, string $mode = 'must'): QueryBuilder
     {
         if (!array_key_exists('filter', $this->query['body'])) {
             $this->query['body']['filter']['bool'][$mode] = [];
@@ -261,10 +230,18 @@ class QueryBuilder
         return $this->lessThanOrEquals($field, $start);
     }
 
-    public function match($field, $value)
+    public function match(string $field, mixed $value): QueryBuilder
     {
-        $query = ['query' => ['match' => [$field => $value]]];
+        $query = [
+            'query' => [
+                'match' => [
+                    $field => $value
+                ]
+            ]
+        ];
+
         $this->merge($query);
+
         return $this;
     }
 
