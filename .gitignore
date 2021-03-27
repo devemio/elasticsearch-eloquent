@@ -1,7 +1,4 @@
+/vendor
+/build
 .env
-vendor
-
-build
-docs
-
 .phpunit.result.cache
