@@ -8,8 +8,9 @@ use Isswp101\Persimmon\Models\BaseElasticsearchModel;
  * @property string name
  * @property int price
  */
-class Product extends BaseElasticsearchModel
+final class Product extends BaseElasticsearchModel
 {
     protected string $index = 'index';
+
     protected int $perRequest = 5;
 }
