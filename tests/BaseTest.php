@@ -63,7 +63,7 @@ class BaseTest extends TestCase
     {
         $this->expectException(Missing404Exception::class);
 
-        $product = Product::create(array_merge(['id' => 1], $this->attributes));
+        $product = Product::create(array_merge(['id' => '1'], $this->attributes));
 
         $this->assertTrue($product->exists());
 
@@ -71,7 +71,7 @@ class BaseTest extends TestCase
 
         $this->assertFalse($product->exists());
 
-        Product::destroy(1);
+        Product::destroy('1');
     }
 
     public function testFindModel(): void

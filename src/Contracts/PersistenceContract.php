@@ -10,7 +10,9 @@ interface PersistenceContract
 {
     public function find(Path $path, array $columns = []): array|null;
 
-    public function save(Path $path, bool $exists, array $attributes): Id;
+    public function create(Path $path, array $attributes): Id;
+
+    public function update(Path $path, array $attributes): Id;
 
     public function delete(Path $path): void;
 

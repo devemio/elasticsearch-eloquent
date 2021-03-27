@@ -39,23 +39,8 @@ final class Persistence implements PersistenceContract
         return $response['_source'];
     }
 
-    public function save(Path $path, bool $exists, array $attributes): Id
+    public function create(Path $path, array $attributes): Id
     {
-        if ($exists) {
-            $params = [
-                'index' => $path->getIndex(),
-                'type' => $path->getType(),
-                'id' => $path->getId()->value(),
-                'body' => [
-                    'doc' => $attributes
-                ]
-            ];
-
-            $this->client->update($params);
-
-            return $path->getId();
-        }
-
         $params = [
             'index' => $path->getIndex(),
             'type' => $path->getType(),
@@ -66,6 +51,22 @@ final class Persistence implements PersistenceContract
         $response = $this->client->index($params);
 
         return new Id($response['_id']);
+    }
+
+    public function update(Path $path, array $attributes): Id
+    {
+        $params = [
+            'index' => $path->getIndex(),
+            'type' => $path->getType(),
+            'id' => $path->getId()->value(),
+            'body' => [
+                'doc' => $attributes
+            ]
+        ];
+
+        $this->client->update($params);
+
+        return $path->getId();
     }
 
     public function delete(Path $path): void
