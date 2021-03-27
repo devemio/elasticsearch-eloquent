@@ -50,7 +50,16 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
         return $this->id;
     }
 
-    public function save(): void
+    private function getUpdatableAttributes(array $keys): array
+    {
+        if ($keys) {
+            $keys = $this->timestamps ? array_merge($keys, ['created_at', 'updated_at']) : $keys;
+        }
+
+        return $this->toArray($keys);
+    }
+
+    public function save(array $columns = []): void
     {
         if (!$this->saving()) {
             return;
@@ -58,9 +67,11 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
         $path = new Path($this->index, $this->type, new Id($this->id));
 
-        $this->touch();
+        $this->touch($this->exists);
 
-        $this->id = $this->persistence->save($path, $this->toArray())->value();
+        $attributes = $this->getUpdatableAttributes($columns);
+
+        $this->id = $this->persistence->save($path, $this->exists, $attributes)->value();
 
         $this->exists = true;
 

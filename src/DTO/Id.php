@@ -16,6 +16,11 @@ final class Id
         return $this->value;
     }
 
+    public function isPresent(): bool
+    {
+        return $this->value != null;
+    }
+
     public static function undefined(): Id
     {
         return new Id(null);

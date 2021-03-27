@@ -21,8 +21,12 @@ trait Attributable
         $this->attributes = $attributes;
     }
 
-    public function toArray(): array
+    public function toArray(array $keys = []): array
     {
+        if ($keys) {
+            return array_intersect_key($this->attributes, array_flip((array)$keys));
+        }
+
         return $this->attributes;
     }
 

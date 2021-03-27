@@ -9,7 +9,7 @@ interface Persistencable
 {
     public function createPersistence(): PersistenceContract;
 
-    public function save(): void;
+    public function save(array $columns): void;
 
     public function delete(): void;
 

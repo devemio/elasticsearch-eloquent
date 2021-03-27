@@ -137,4 +137,30 @@ class BaseTest extends TestCase
 
         $this->assertGreaterThanOrEqual(10, count($products));
     }
+
+    public function testUpdateModel(): void
+    {
+        $product = new Product($this->attributes);
+
+        $product->save();
+
+        $this->assertNotNull($product->id);
+        $this->assertNotNull($product->created_at);
+        $this->assertNotNull($product->updated_at);
+        $this->assertEquals($this->attributes['name'], $product->name);
+
+        sleep(1);
+        $product->name = 'updated';
+        $product->save(['name']);
+
+        $params = [
+            'index' => $product->getIndex(),
+            'type' => $product->getType(),
+            'id' => $product->getId()
+        ];
+
+        $res = $this->client->get($params)['_source'];
+        $this->assertEquals('updated', $res['name']);
+        $this->assertNotEquals($res['created_at'], $res['updated_at']);
+    }
 }

@@ -39,8 +39,23 @@ final class Persistence implements PersistenceContract
         return $response['_source'];
     }
 
-    public function save(Path $path, array $attributes): Id
+    public function save(Path $path, bool $exists, array $attributes): Id
     {
+        if ($exists) {
+            $params = [
+                'index' => $path->getIndex(),
+                'type' => $path->getType(),
+                'id' => $path->getId()->value(),
+                'body' => [
+                    'doc' => $attributes
+                ]
+            ];
+
+            $this->client->update($params);
+
+            return $path->getId();
+        }
+
         $params = [
             'index' => $path->getIndex(),
             'type' => $path->getType(),

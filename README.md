@@ -128,7 +128,7 @@ You can use the partial update to update specific fields quickly.
 ```php
 $product = Product::find(1, ['name']);
 $product->name = 'Name';
-$product->save('name');
+$product->save(['name']);
 ```
 
 ### Delete models
