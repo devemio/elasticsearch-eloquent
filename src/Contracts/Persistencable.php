@@ -15,14 +15,15 @@ interface Persistencable
 
     public static function create(array $attributes): BaseElasticsearchModel;
 
-    public static function find(int|string $id): BaseElasticsearchModel|null;
+    public static function find(int|string $id, array $columns = []): BaseElasticsearchModel|null;
 
     /**
      * @param int|string $id
+     * @param array $columns
      * @return BaseElasticsearchModel
      * @throws ModelNotFoundException
      */
-    public static function findOrFail(int|string $id): BaseElasticsearchModel;
+    public static function findOrFail(int|string $id, array $columns = []): BaseElasticsearchModel;
 
     public static function destroy(int|string $id): void;
 }

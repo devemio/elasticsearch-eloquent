@@ -7,7 +7,7 @@ use Isswp101\Persimmon\DTO\Path;
 
 interface PersistenceContract
 {
-    public function find(Path $path): array|null;
+    public function find(Path $path, array $columns = []): array|null;
 
     public function save(Path $path, array $attributes): Id;
 

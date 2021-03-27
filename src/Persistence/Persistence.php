@@ -17,12 +17,16 @@ final class Persistence implements PersistenceContract
         $this->client = $client;
     }
 
-    public function find(Path $path): array|null
+    public function find(Path $path, array $columns = []): array|null
     {
         $params = [
             'index' => $path->getIndex(),
             'id' => $path->getId()->value()
         ];
+
+        if ($columns) {
+            $params['_source'] = $columns;
+        }
 
         try {
             $response = $this->client->get($params);

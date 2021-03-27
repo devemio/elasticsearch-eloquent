@@ -100,13 +100,13 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
         return $model;
     }
 
-    public static function find(int|string $id): static|null
+    public static function find(int|string $id, array $columns = []): static|null
     {
         $model = new static();
 
         $path = new Path($model->getIndex(), $model->getType(), new Id($id));
 
-        $attributes = $model->persistence->find($path);
+        $attributes = $model->persistence->find($path, $columns);
 
         if (!$attributes) {
             return null;
@@ -121,9 +121,9 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
         return $model;
     }
 
-    public static function findOrFail(int|string $id): static
+    public static function findOrFail(int|string $id, array $columns = []): static
     {
-        $model = static::find($id);
+        $model = static::find($id, $columns);
 
         if (!$model) {
             throw new ModelNotFoundException();
