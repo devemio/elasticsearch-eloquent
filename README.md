@@ -1,4 +1,4 @@
-# Persimmon / Elasticsearch Eloquent
+# Persimmon / Elasticsearch Eloquent 2.x
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
