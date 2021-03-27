@@ -17,9 +17,9 @@ class BaseTest extends TestCase
     {
         Product::create(['id' => 1, 'price' => 10]);
 
-        $product = Product::find(1);
+        $products = Product::search();
 
-        dd($product->toArray());
+        dd($products[0]->toArray());
 
 //        $product = new Product([
 //            'price' => 10

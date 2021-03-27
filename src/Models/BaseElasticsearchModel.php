@@ -76,7 +76,7 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
     public function save(): void
     {
-        if ($this->saving() === false) {
+        if (!$this->saving()) {
             return;
         }
 
@@ -93,7 +93,7 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
     public function delete(): void
     {
-        if ($this->deleting() === false) {
+        if (!$this->deleting()) {
             return;
         }
 
@@ -152,5 +152,27 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
         $model->id = $id;
 
         $model->delete();
+    }
+
+    public static function search(): array
+    {
+        $model = new static();
+
+        if (!$model->searching()) {
+            return [];
+        }
+
+        $path = new Path($model->index, $model->type, Id::undefined());
+
+        $response = $model->persistence->search($path);
+
+        $models = [];
+        foreach ($response->getItems() as $attributes) {
+            $models[] = new static($attributes);
+        }
+
+        $model->searched($response);
+
+        return $models;
     }
 }

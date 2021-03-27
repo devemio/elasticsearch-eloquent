@@ -2,6 +2,8 @@
 
 namespace Isswp101\Persimmon\Traits;
 
+use Isswp101\Persimmon\DTO\SearchResponse;
+
 trait Eventable
 {
     protected function saving(): bool
@@ -20,6 +22,16 @@ trait Eventable
     }
 
     protected function deleted(): void
+    {
+
+    }
+
+    protected function searching(): bool
+    {
+        return true;
+    }
+
+    protected function searched(SearchResponse $response): void
     {
 
     }

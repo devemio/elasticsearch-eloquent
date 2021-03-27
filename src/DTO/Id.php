@@ -15,4 +15,9 @@ final class Id
     {
         return $this->value;
     }
+
+    public static function undefined(): Id
+    {
+        return new Id(null);
+    }
 }

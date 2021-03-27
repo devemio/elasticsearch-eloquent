@@ -7,6 +7,7 @@ use Exception;
 use Isswp101\Persimmon\Contracts\PersistenceContract;
 use Isswp101\Persimmon\DTO\Id;
 use Isswp101\Persimmon\DTO\Path;
+use Isswp101\Persimmon\DTO\SearchResponse;
 
 final class Persistence implements PersistenceContract
 {
@@ -58,5 +59,19 @@ final class Persistence implements PersistenceContract
         ];
 
         $this->client->delete($params);
+    }
+
+    public function search(Path $path): SearchResponse
+    {
+        $params = [
+            'index' => $path->getIndex(),
+            'body' => [
+                'query' => [
+                    'match_all' => new \stdClass()
+                ]
+            ]
+        ];
+
+        return new SearchResponse($this->client->search($params));
     }
 }

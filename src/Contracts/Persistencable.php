@@ -26,4 +26,6 @@ interface Persistencable
     public static function findOrFail(int|string $id, array $columns = []): BaseElasticsearchModel;
 
     public static function destroy(int|string $id): void;
+
+    public static function search(): array;
 }
