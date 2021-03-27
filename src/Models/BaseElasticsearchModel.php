@@ -3,7 +3,9 @@
 namespace Isswp101\Persimmon\Models;
 
 use Elasticsearch\ClientBuilder;
+use Isswp101\Persimmon\Concerns\Attributable;
 use Isswp101\Persimmon\Concerns\Elasticsearchable;
+use Isswp101\Persimmon\Concerns\Existable;
 use Isswp101\Persimmon\Concerns\Timestampable;
 use Isswp101\Persimmon\Contracts\Arrayable;
 use Isswp101\Persimmon\Contracts\ElasticsearchModelContract;
@@ -23,18 +25,15 @@ use Stringable;
  */
 abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Persistencable, Arrayable, Stringable
 {
-    use Elasticsearchable, Timestampable, Eventable;
+    use Elasticsearchable, Timestampable, Eventable, Existable, Attributable;
 
     private PersistenceContract $persistence;
 
     protected int $perRequest = 50;
 
-    private array $attributes;
-    private bool $existing = false;
-
     public function __construct(array $attributes = [])
     {
-        $this->attributes = $attributes;
+        $this->fill($attributes);
 
         $this->persistence = $this->createPersistence();
     }
@@ -46,34 +45,9 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
         return new Persistence($client);
     }
 
-    public function __get(string $key): mixed
-    {
-        return $this->attributes[$key] ?? null;
-    }
-
-    public function __set(string $key, mixed $value): void
-    {
-        $this->attributes[$key] = $value;
-    }
-
     public function getId(): int|string|null
     {
         return $this->id;
-    }
-
-    public function toArray(): array
-    {
-        return $this->attributes;
-    }
-
-    public function fill(array $attributes): void
-    {
-        $this->attributes = $attributes;
-    }
-
-    public function __toString(): string
-    {
-        return json_encode($this->toArray());
     }
 
     public function save(): void
@@ -88,7 +62,7 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
         $this->id = $this->persistence->save($path, $this->toArray())->value();
 
-        $this->existing = true;
+        $this->exists = true;
 
         $this->saved();
     }
@@ -131,7 +105,7 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
         $model->id = $id;
 
-        $model->existing = true;
+        $model->exists = true;
 
         return $model;
     }
