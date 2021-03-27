@@ -173,6 +173,8 @@ You can override the following methods to define events:
 * `saved()` is called after saving, updating, creating the model
 * `deleting()` is called before deleting the model
 * `deleted()` is called after deleting the model
+* `searching()` is called after searching models
+* `searched()` is called after searching models
 
 For example:
 
@@ -402,58 +404,6 @@ $line = PurchaseOrderLine::search($query)->first();
 $po = $line->po()->get(); // will be retrieved from inner_hits cache
 ```
 
-### Logging and data access layer events
-
-To debug all elasticsearch queries to search you can use own `DALEmitter` class:
-
-```php
-use Isswp101\Persimmon\DAL\DALEvents;
-use Isswp101\Persimmon\Event\EventEmitter;
-
-class DALEmitter extends EventEmitter
-{
-    public function __construct()
-    {
-        $this->on(DALEvents::BEFORE_SEARCH, function (array $params) {
-            Log::debug('Elasticsearch query', $params);
-        });
-    }
-}
-```
-
-And configure it in your service provider:
-
-```php
-use Elasticsearch\Client;
-use Isswp101\Persimmon\DAL\ElasticsearchDAL;
-use Isswp101\Persimmon\ElasticsearchModel as Model;
-use Isswp101\Persimmon\Test\Models\Events\DALEmitter;
-
-class ElasticsearchModel extends Model
-{
-    public function __construct(array $attributes = [])
-    {
-        $dal = new ElasticsearchDAL($this, app(Client::class), app(DALEmitter::class));
-
-        parent::__construct($dal, $attributes);
-    }
-    // ...
-}
-```
-
-There are the following events:
-* `DALEvents::BEFORE_SEARCH` is triggered before any search.
-* `DALEvents::AFTER_SEARCH` is triggered after any search.
-
-**TO BE CONTINUED...**
-
-@TODO:
-* Add documentation about filters
-
-
-## Change log
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
 ## Testing
 
@@ -461,22 +411,10 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 $ composer test
 ```
 
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
-
-## Security
-
-If you discover any security related issues, please email isswp101@gmail.com instead of using the issue tracker.
-
-## Credits
-
-- [Sergey Sorokin][link-author]
-- [All Contributors][link-contributors]
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT).
 
 [ico-version]: https://img.shields.io/packagist/v/isswp101/elasticsearch-eloquent.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
@@ -490,5 +428,4 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-scrutinizer]: https://scrutinizer-ci.com/g/isswp101/elasticsearch-eloquent/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/isswp101/elasticsearch-eloquent
 [link-downloads]: https://packagist.org/packages/isswp101/elasticsearch-eloquent
-[link-author]: https://github.com/isswp101
-[link-contributors]: ../../contributors
+[link-author]: https://github.com/devemio
