@@ -30,11 +30,19 @@ You should override `index` and `type` properties to determine the document path
 
 ```php
 use Isswp101\Persimmon\Models\BaseElasticsearchModel;
+use Isswp101\Persimmon\Persistence\Persistence;
+use Isswp101\Persimmon\Contracts\PersistenceContract;
 
 class Product extends BaseElasticsearchModel
 {
     protected string $index = 'index';
     protected string|null $type = 'type'; // optional
+
+    // (Optional) if you have a pre-configured Elasticsearch client you can pass it here.
+    public function createPersistence(): PersistenceContract
+    {
+        return new Persistence($client);
+    }
 }
 ```
 
