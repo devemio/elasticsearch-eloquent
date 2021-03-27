@@ -6,7 +6,7 @@ interface ElasticsearchModelContract
 {
     public function getIndex(): string;
 
-    public function getType(): string;
+    public function getType(): string|null;
 
     public function getId(): int|string|null;
 

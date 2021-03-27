@@ -136,13 +136,7 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
     public static function findOrFail(int|string $id, array $columns = []): static
     {
-        $model = static::find($id, $columns);
-
-        if (!$model) {
-            throw new ModelNotFoundException();
-        }
-
-        return $model;
+        return static::find($id, $columns) ?? throw new ModelNotFoundException();
     }
 
     public static function destroy(int|string $id): void
@@ -174,5 +168,19 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
         $model->searched($response);
 
         return $models;
+    }
+
+    public static function first(array $query): BaseElasticsearchModel|null
+    {
+        $query['size'] = 1;
+
+        $items = static::search($query);
+
+        return $items[0] ?? null;
+    }
+
+    public static function firstOrFail(array $query): BaseElasticsearchModel
+    {
+        return static::first($query) ?? throw new ModelNotFoundException();
     }
 }

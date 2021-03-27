@@ -22,6 +22,7 @@ final class Persistence implements PersistenceContract
     {
         $params = [
             'index' => $path->getIndex(),
+            'type' => $path->getType(),
             'id' => $path->getId()->value()
         ];
 
@@ -42,6 +43,7 @@ final class Persistence implements PersistenceContract
     {
         $params = [
             'index' => $path->getIndex(),
+            'type' => $path->getType(),
             'id' => $path->getId()->value(),
             'body' => $attributes
         ];
@@ -55,6 +57,7 @@ final class Persistence implements PersistenceContract
     {
         $params = [
             'index' => $path->getIndex(),
+            'type' => $path->getType(),
             'id' => $path->getId()->value(),
         ];
 
@@ -65,6 +68,7 @@ final class Persistence implements PersistenceContract
     {
         $params = [
             'index' => $path->getIndex(),
+            'type' => $path->getType(),
             'body' => $query
         ];
 

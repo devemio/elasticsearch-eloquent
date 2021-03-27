@@ -5,10 +5,10 @@ namespace Isswp101\Persimmon\DTO;
 final class Path
 {
     private string $index;
-    private string $type;
+    private string|null $type;
     private Id $id;
 
-    public function __construct(string $index, string $type, Id $id)
+    public function __construct(string $index, string|null $type, Id $id)
     {
         $this->index = $index;
         $this->type = $type;
@@ -20,7 +20,7 @@ final class Path
         return $this->index;
     }
 
-    public function getType(): string
+    public function getType(): string|null
     {
         return $this->type;
     }

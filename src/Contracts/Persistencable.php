@@ -28,4 +28,13 @@ interface Persistencable
     public static function destroy(int|string $id): void;
 
     public static function search(array $query): array;
+
+    public static function first(array $query): BaseElasticsearchModel|null;
+
+    /**
+     * @param array $query
+     * @return BaseElasticsearchModel
+     * @throws ModelNotFoundException
+     */
+    public static function firstOrFail(array $query): BaseElasticsearchModel;
 }
