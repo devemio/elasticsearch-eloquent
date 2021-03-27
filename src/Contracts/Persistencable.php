@@ -37,4 +37,6 @@ interface Persistencable
      * @throws ModelNotFoundException
      */
     public static function firstOrFail(array $query): BaseElasticsearchModel;
+
+    public static function all(array $query): array;
 }

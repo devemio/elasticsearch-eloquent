@@ -27,6 +27,8 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
     private PersistenceContract $persistence;
 
+    protected int $perRequest = 50;
+
     private array $attributes;
     private bool $existing = false;
 
@@ -182,5 +184,25 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
     public static function firstOrFail(array $query): BaseElasticsearchModel
     {
         return static::first($query) ?? throw new ModelNotFoundException();
+    }
+
+    public static function all(array $query = []): array
+    {
+        $items = [];
+
+        $model = new static();
+
+        $query['from'] = 0;
+        $query['size'] = $model->perRequest;
+        $itemsPerRequest = static::search($query);
+        $items = array_merge($items, $itemsPerRequest);
+
+        while (count($itemsPerRequest) == $model->perRequest) {
+            $query['from'] += $model->perRequest;
+            $itemsPerRequest = static::search($query);
+            $items = array_merge($items, $itemsPerRequest);
+        }
+
+        return $items;
     }
 }

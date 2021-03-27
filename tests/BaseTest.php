@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 function dd($value): void
 {
     print_r($value);
+    echo PHP_EOL;
     exit();
 }
 
@@ -17,27 +18,23 @@ class BaseTest extends TestCase
 {
     public function testTrue(): void
     {
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
-        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
+//        Product::create(['id' => rand(1, 100), 'price' => rand(1, 1000)]);
 
-        $query = [
-            'size' => 60
-        ];
+        $products = Product::all();
 
-        $products = Product::search($query);
-
-        dd(count($products));
+        dd('Total: ' . count($products));
 
 //        $product = new Product([
 //            'price' => 10
