@@ -2,9 +2,7 @@
 
 namespace Isswp101\Persimmon\DTO;
 
-use Stringable;
-
-final class Path implements Stringable
+final class Path
 {
     private string $index;
     private string $type;
@@ -30,14 +28,5 @@ final class Path implements Stringable
     public function getId(): Id
     {
         return $this->id;
-    }
-
-    public function __toString(): string
-    {
-        if (!$this->id->value()) {
-            return implode('/', [$this->index, $this->type]);
-        }
-
-        return implode('/', [$this->index, $this->type, $this->id->value()]);
     }
 }

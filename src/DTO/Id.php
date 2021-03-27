@@ -4,14 +4,14 @@ namespace Isswp101\Persimmon\DTO;
 
 final class Id
 {
-    private mixed $value;
+    private int|string|null $value;
 
-    public function __construct(mixed $value)
+    public function __construct(int|string|null $value)
     {
         $this->value = $value;
     }
 
-    public function value(): mixed
+    public function value(): int|string|null
     {
         return $this->value;
     }
