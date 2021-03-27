@@ -3,3 +3,5 @@ vendor
 
 build
 docs
+
+.phpunit.result.cache

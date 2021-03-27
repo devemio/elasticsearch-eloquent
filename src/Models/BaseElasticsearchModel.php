@@ -4,6 +4,7 @@ namespace Isswp101\Persimmon\Models;
 
 use Elasticsearch\ClientBuilder;
 use Isswp101\Persimmon\Concerns\Elasticsearchable;
+use Isswp101\Persimmon\Concerns\Timestampable;
 use Isswp101\Persimmon\Contracts\Arrayable;
 use Isswp101\Persimmon\Contracts\ElasticsearchModelContract;
 use Isswp101\Persimmon\Contracts\Persistencable;
@@ -16,10 +17,12 @@ use Stringable;
 
 /**
  * @property int|string|null id
+ * @property string created_at
+ * @property string updated_at
  */
 abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Persistencable, Arrayable, Stringable
 {
-    use Elasticsearchable;
+    use Elasticsearchable, Timestampable;
 
     private PersistenceContract $persistence;
 
@@ -73,6 +76,8 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
     public function save(): void
     {
         $path = new Path($this->index, $this->type, new Id($this->id));
+
+        $this->touch();
 
         $this->id = $this->persistence->save($path, $this->toArray())->value();
 
