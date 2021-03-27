@@ -7,8 +7,12 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This package allows you to interact with Elasticsearch as you interact with Eloquent models in Laravel.  
-Feel free to improve the project.
+This package allows you to interact with Elasticsearch as you interact with Eloquent models in Laravel.
+
+## Requirements
+
+- PHP >= 8.0
+- Elasticsearch >= 7.0
 
 ## Install
 
