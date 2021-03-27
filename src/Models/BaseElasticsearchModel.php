@@ -13,6 +13,7 @@ use Isswp101\Persimmon\DTO\Id;
 use Isswp101\Persimmon\DTO\Path;
 use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
 use Isswp101\Persimmon\Persistence\Persistence;
+use Isswp101\Persimmon\Traits\Eventable;
 use Stringable;
 
 /**
@@ -22,7 +23,7 @@ use Stringable;
  */
 abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Persistencable, Arrayable, Stringable
 {
-    use Elasticsearchable, Timestampable;
+    use Elasticsearchable, Timestampable, Eventable;
 
     private PersistenceContract $persistence;
 
@@ -75,6 +76,10 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
     public function save(): void
     {
+        if ($this->saving() === false) {
+            return;
+        }
+
         $path = new Path($this->index, $this->type, new Id($this->id));
 
         $this->touch();
@@ -82,13 +87,21 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
         $this->id = $this->persistence->save($path, $this->toArray())->value();
 
         $this->existing = true;
+
+        $this->saved();
     }
 
     public function delete(): void
     {
+        if ($this->deleting() === false) {
+            return;
+        }
+
         $path = new Path($this->index, $this->type, new Id($this->id));
 
         $this->persistence->delete($path);
+
+        $this->deleted();
     }
 
     public static function create(array $attributes): static
