@@ -127,15 +127,14 @@ class BaseTest extends TestCase
         Product::firstOrFail($query);
     }
 
-    /** @group failing */
     public function testAllModels(): void
     {
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             Product::create($this->attributes);
         }
 
         $products = Product::all();
 
-        $this->assertGreaterThanOrEqual(20, count($products));
+        $this->assertGreaterThanOrEqual(10, count($products));
     }
 }

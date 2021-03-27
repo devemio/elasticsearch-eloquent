@@ -17,7 +17,6 @@ use Isswp101\Persimmon\Exceptions\ModelNotFoundException;
 use Isswp101\Persimmon\Persistence\Persistence;
 use Isswp101\Persimmon\Traits\Eventable;
 use Stringable;
-use function Isswp101\Persimmon\Tests\dd;
 
 /**
  * @property int|string|null id
@@ -176,7 +175,6 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
         while (count($itemsPerRequest) == $model->perRequest) {
             $query['from'] += $model->perRequest;
-            var_dump($query);
             $itemsPerRequest = static::search($query);
             $items = array_merge($items, $itemsPerRequest);
         }
