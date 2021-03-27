@@ -11,5 +11,5 @@ use Isswp101\Persimmon\Models\BaseElasticsearchModel;
 class Product extends BaseElasticsearchModel
 {
     protected string $index = 'index';
-    protected int $perRequest = 10;
+//    protected int $perRequest = 10;
 }

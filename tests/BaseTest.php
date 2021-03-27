@@ -127,6 +127,7 @@ class BaseTest extends TestCase
         Product::firstOrFail($query);
     }
 
+    /** @group failing */
     public function testAllModels(): void
     {
         for ($i = 0; $i < 20; $i++) {

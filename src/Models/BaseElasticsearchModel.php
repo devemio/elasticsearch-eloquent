@@ -174,10 +174,9 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
         $itemsPerRequest = static::search($query);
         $items = array_merge($items, $itemsPerRequest);
 
-        dd(count($itemsPerRequest));
-
         while (count($itemsPerRequest) == $model->perRequest) {
             $query['from'] += $model->perRequest;
+            var_dump($query);
             $itemsPerRequest = static::search($query);
             $items = array_merge($items, $itemsPerRequest);
         }
