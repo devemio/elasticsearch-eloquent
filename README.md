@@ -38,7 +38,7 @@ class Product extends BaseElasticsearchModel
     protected string $index = 'index';
     protected string|null $type = 'type'; // optional
 
-    // (Optional) if you have a pre-configured Elasticsearch client you can pass it here.
+    // If you have a pre-configured Elasticsearch client you can pass it here (optional)
     public function createPersistence(): PersistenceContract
     {
         return new Persistence($client);
