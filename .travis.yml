@@ -2,7 +2,7 @@ dist: focal
 language: php
 
 services:
-  - docker
+  - elasticsearch
 
 php:
   - 8.0
@@ -17,10 +17,8 @@ matrix:
     - php: 8.0
       env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
 
-before_install:
-  - docker run --rm -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.12.0
-
 before_script:
+  - sleep 30
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
 
 script:
