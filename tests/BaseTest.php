@@ -17,13 +17,14 @@ class BaseTest extends TestCase
 {
     public function testTrue(): void
     {
-        Product::create(['id' => 1, 'price' => 10]);
+        Product::create(['id' => 2, 'price' => 10]);
 
-        $matchAll = new MatchAllQuery();
-        $search = new Search();
-        $search->addQuery($matchAll);
-
-        $products = Product::search($search->toArray());
+        $products = Product::search([
+            'from' => 1,
+            'query' => [
+                'match_all' => new \stdClass()
+            ]
+        ]);
 
         dd($products[0]->toArray());
 
