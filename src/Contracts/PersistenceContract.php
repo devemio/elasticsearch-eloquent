@@ -14,5 +14,5 @@ interface PersistenceContract
 
     public function delete(Path $path): void;
 
-    public function search(Path $path): SearchResponse;
+    public function search(Path $path, array $query): SearchResponse;
 }

@@ -61,15 +61,11 @@ final class Persistence implements PersistenceContract
         $this->client->delete($params);
     }
 
-    public function search(Path $path): SearchResponse
+    public function search(Path $path, array $query): SearchResponse
     {
         $params = [
             'index' => $path->getIndex(),
-            'body' => [
-                'query' => [
-                    'match_all' => new \stdClass()
-                ]
-            ]
+            'body' => $query
         ];
 
         return new SearchResponse($this->client->search($params));

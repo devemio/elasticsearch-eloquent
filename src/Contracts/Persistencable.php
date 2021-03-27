@@ -27,5 +27,5 @@ interface Persistencable
 
     public static function destroy(int|string $id): void;
 
-    public static function search(): array;
+    public static function search(array $query): array;
 }

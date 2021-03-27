@@ -3,6 +3,8 @@
 namespace Isswp101\Persimmon\Tests;
 
 use Isswp101\Persimmon\Tests\Models\Product;
+use ONGR\ElasticsearchDSL\Query\MatchAllQuery;
+use ONGR\ElasticsearchDSL\Search;
 use PHPUnit\Framework\TestCase;
 
 function dd($value): void
@@ -17,7 +19,11 @@ class BaseTest extends TestCase
     {
         Product::create(['id' => 1, 'price' => 10]);
 
-        $products = Product::search();
+        $matchAll = new MatchAllQuery();
+        $search = new Search();
+        $search->addQuery($matchAll);
+
+        $products = Product::search($search->toArray());
 
         dd($products[0]->toArray());
 

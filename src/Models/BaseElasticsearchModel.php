@@ -154,7 +154,7 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
         $model->delete();
     }
 
-    public static function search(): array
+    public static function search(array $query): array
     {
         $model = new static();
 
@@ -164,7 +164,7 @@ abstract class BaseElasticsearchModel implements ElasticsearchModelContract, Per
 
         $path = new Path($model->index, $model->type, Id::undefined());
 
-        $response = $model->persistence->search($path);
+        $response = $model->persistence->search($path, $query);
 
         $models = [];
         foreach ($response->getItems() as $attributes) {
