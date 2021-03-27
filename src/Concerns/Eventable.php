@@ -13,7 +13,6 @@ trait Eventable
 
     protected function saved(): void
     {
-
     }
 
     protected function deleting(): bool
@@ -23,7 +22,6 @@ trait Eventable
 
     protected function deleted(): void
     {
-
     }
 
     protected function searching(): bool
@@ -33,6 +31,5 @@ trait Eventable
 
     protected function searched(SearchResponse $response): void
     {
-
     }
 }
